@@ -10,7 +10,7 @@ This project is intentionally static:
 
 - `index.html` contains the app shell.
 - `styles.css` defines the iPad-friendly layout and tracing template style.
-- `app.js` contains lesson data, drawing logic, progress storage, and TTS playback.
+- `app.js` contains default lesson data, custom lesson storage, drawing logic, progress storage, and TTS playback.
 - `sw.js` enables offline caching.
 - `manifest.webmanifest` enables installable PWA behavior.
 - `_headers` contains Cloudflare Pages response headers.
@@ -84,3 +84,10 @@ Before finishing a change, run:
 node --check app.js
 node --check sw.js
 ```
+
+
+## Custom Lessons
+
+The app supports user-added lessons from the sidebar form. Custom lessons are stored in `localStorage` under `bula-teach-custom-lessons-v1` and are intentionally device-local. Do not add backend sync unless the user asks for multi-device use.
+
+When rendering user-provided text, use DOM APIs and `textContent`; do not inject user input through `innerHTML`.

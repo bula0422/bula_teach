@@ -1,4 +1,4 @@
-const LESSONS = [
+const DEFAULT_LESSONS = [
   { id: "zh_wo", type: "chinese", display: "我", hint: "ㄨㄛˇ", meaning: "I / me", speakText: "我", lang: "zh-TW" },
   { id: "zh_ni", type: "chinese", display: "你", hint: "ㄋㄧˇ", meaning: "you", speakText: "你", lang: "zh-TW" },
   { id: "zh_ai", type: "chinese", display: "愛", hint: "ㄞˋ", meaning: "love", speakText: "愛", lang: "zh-TW" },
@@ -19,12 +19,14 @@ const TYPE_LABEL = {
   english: "英文"
 };
 
-const STORAGE_KEY = "bula-teach-progress-v1";
+const PROGRESS_KEY = "bula-teach-progress-v1";
+const CUSTOM_LESSONS_KEY = "bula-teach-custom-lessons-v1";
 
 const state = {
   filter: "all",
   index: 0,
   drawing: false,
+  customLessons: loadCustomLessons(),
   completed: new Set(loadProgress())
 };
 
@@ -41,30 +43,85 @@ const els = {
   clearButton: document.querySelector("#clearButton"),
   doneButton: document.querySelector("#doneButton"),
   prevButton: document.querySelector("#prevButton"),
-  nextButton: document.querySelector("#nextButton")
+  nextButton: document.querySelector("#nextButton"),
+  addLessonForm: document.querySelector("#addLessonForm"),
+  customText: document.querySelector("#customText"),
+  customType: document.querySelector("#customType"),
+  customHint: document.querySelector("#customHint"),
+  customSpeak: document.querySelector("#customSpeak")
 };
 
 const ctx = els.canvas.getContext("2d");
 
+function allLessons() {
+  return [...DEFAULT_LESSONS, ...state.customLessons];
+}
+
 function loadProgress() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return JSON.parse(localStorage.getItem(PROGRESS_KEY) || "[]");
   } catch {
     return [];
   }
 }
 
+function loadCustomLessons() {
+  try {
+    const items = JSON.parse(localStorage.getItem(CUSTOM_LESSONS_KEY) || "[]");
+    return Array.isArray(items) ? items.filter(isValidLesson) : [];
+  } catch {
+    return [];
+  }
+}
+
+function isValidLesson(item) {
+  return item && TYPE_LABEL[item.type] && typeof item.display === "string" && item.display.trim();
+}
+
 function saveProgress() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.completed]));
+  localStorage.setItem(PROGRESS_KEY, JSON.stringify([...state.completed]));
+}
+
+function saveCustomLessons() {
+  localStorage.setItem(CUSTOM_LESSONS_KEY, JSON.stringify(state.customLessons));
 }
 
 function visibleLessons() {
-  return state.filter === "all" ? LESSONS : LESSONS.filter((item) => item.type === state.filter);
+  const lessons = allLessons();
+  return state.filter === "all" ? lessons : lessons.filter((item) => item.type === state.filter);
 }
 
 function currentItem() {
   const items = visibleLessons();
-  return items[Math.min(state.index, items.length - 1)] || LESSONS[0];
+  return items[Math.min(state.index, items.length - 1)] || allLessons()[0];
+}
+
+function createLessonButton(lesson, index, activeId) {
+  const button = document.createElement("button");
+  button.className = `lesson-item${lesson.id === activeId ? " is-active" : ""}`;
+  button.type = "button";
+
+  const glyph = document.createElement("span");
+  glyph.className = "lesson-glyph";
+  glyph.textContent = lesson.display;
+
+  const meta = document.createElement("span");
+  meta.className = "lesson-meta";
+
+  const title = document.createElement("strong");
+  title.textContent = lesson.hint || lesson.display;
+
+  const detail = document.createElement("span");
+  detail.textContent = lesson.meaning || TYPE_LABEL[lesson.type];
+
+  const done = document.createElement("span");
+  done.className = "done-mark";
+  done.textContent = state.completed.has(lesson.id) ? "✓" : lesson.custom ? "+" : "";
+
+  meta.append(title, detail);
+  button.append(glyph, meta, done);
+  button.addEventListener("click", () => selectItem(index));
+  return button;
 }
 
 function renderLessonList() {
@@ -72,19 +129,7 @@ function renderLessonList() {
   els.lessonList.innerHTML = "";
 
   visibleLessons().forEach((lesson, index) => {
-    const button = document.createElement("button");
-    button.className = `lesson-item${lesson.id === item.id ? " is-active" : ""}`;
-    button.type = "button";
-    button.innerHTML = `
-      <span class="lesson-glyph">${lesson.display}</span>
-      <span class="lesson-meta">
-        <strong>${lesson.hint}</strong>
-        <span>${lesson.meaning}</span>
-      </span>
-      <span class="done-mark">${state.completed.has(lesson.id) ? "✓" : ""}</span>
-    `;
-    button.addEventListener("click", () => selectItem(index));
-    els.lessonList.append(button);
+    els.lessonList.append(createLessonButton(lesson, index, item.id));
   });
 }
 
@@ -92,8 +137,8 @@ function renderCurrentItem() {
   const item = currentItem();
   els.itemType.textContent = TYPE_LABEL[item.type];
   els.itemTitle.textContent = item.display;
-  els.hintText.textContent = item.hint;
-  els.meaningText.textContent = item.meaning;
+  els.hintText.textContent = item.hint || item.display;
+  els.meaningText.textContent = item.meaning || TYPE_LABEL[item.type];
   els.traceText.textContent = item.display;
   els.traceText.classList.toggle("english", item.type === "english");
   els.doneButton.textContent = state.completed.has(item.id) ? "已完成" : "完成";
@@ -173,7 +218,7 @@ function speakCurrent() {
   }
 
   window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(item.speakText);
+  const utterance = new SpeechSynthesisUtterance(item.speakText || item.display);
   utterance.lang = item.lang;
   utterance.rate = item.type === "english" ? 0.82 : 0.78;
   utterance.pitch = 1;
@@ -192,6 +237,46 @@ function setFilter(filter) {
   state.index = 0;
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.classList.toggle("is-active", tab.dataset.filter === filter);
+  });
+  renderCurrentItem();
+}
+
+function langForType(type) {
+  return type === "english" ? "en-US" : "zh-TW";
+}
+
+function meaningForType(type) {
+  return type === "english" ? "custom word" : TYPE_LABEL[type];
+}
+
+function addCustomLesson(event) {
+  event.preventDefault();
+
+  const display = els.customText.value.trim();
+  if (!display) return;
+
+  const type = els.customType.value;
+  const hint = els.customHint.value.trim() || display;
+  const speakText = els.customSpeak.value.trim() || hint || display;
+  const lesson = {
+    id: `custom_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    type,
+    display,
+    hint,
+    meaning: meaningForType(type),
+    speakText,
+    lang: langForType(type),
+    custom: true
+  };
+
+  state.customLessons.push(lesson);
+  saveCustomLessons();
+  els.addLessonForm.reset();
+  els.customType.value = type;
+  state.filter = type;
+  state.index = visibleLessons().length - 1;
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.classList.toggle("is-active", tab.dataset.filter === type);
   });
   renderCurrentItem();
 }
@@ -215,6 +300,7 @@ document.querySelectorAll(".tab").forEach((tab) => {
   tab.addEventListener("click", () => setFilter(tab.dataset.filter));
 });
 
+els.addLessonForm.addEventListener("submit", addCustomLesson);
 els.canvas.addEventListener("pointerdown", startDrawing);
 els.canvas.addEventListener("pointermove", draw);
 els.canvas.addEventListener("pointerup", stopDrawing);

@@ -97,6 +97,57 @@ h1 {
   font-size: 13px;
 }
 
+.add-form {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffaf0;
+}
+
+.field-row,
+.field-grid {
+  display: grid;
+  gap: 6px;
+}
+
+.field-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.field-row label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.add-form input,
+.add-form select {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.add-form input::placeholder {
+  color: #8a918f;
+}
+
+.add-button {
+  min-height: 38px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  font-weight: 800;
+}
+
 .tabs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -303,7 +354,7 @@ h2 {
   }
 
   .sidebar {
-    max-height: 230px;
+    max-height: 360px;
   }
 
   .lesson-list {

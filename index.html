@@ -21,6 +21,25 @@
           </div>
         </div>
 
+        <form class="add-form" id="addLessonForm" autocomplete="off">
+          <div class="field-row">
+            <label for="customText">新增字卡</label>
+            <input id="customText" name="customText" type="text" maxlength="18" placeholder="輸入字、注音或英文" required />
+          </div>
+          <div class="field-grid">
+            <select id="customType" name="customType" aria-label="分類">
+              <option value="chinese">中文</option>
+              <option value="bopomofo">注音</option>
+              <option value="english">英文</option>
+            </select>
+            <input id="customHint" name="customHint" type="text" maxlength="24" placeholder="提示" />
+          </div>
+          <div class="field-grid">
+            <input id="customSpeak" name="customSpeak" type="text" maxlength="40" placeholder="發音文字" />
+            <button class="add-button" type="submit">新增</button>
+          </div>
+        </form>
+
         <div class="tabs" role="tablist" aria-label="教材分類">
           <button class="tab is-active" data-filter="all" type="button">全部</button>
           <button class="tab" data-filter="chinese" type="button">中文</button>
