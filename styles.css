@@ -313,7 +313,7 @@ h2 {
 }
 
 .trace-text.english {
-  font-family: "Comic Sans MS", "Marker Felt", "Bradley Hand", cursive;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(88px, 22dvh, 220px);
   font-weight: 700;
 }
