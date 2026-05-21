@@ -1,3 +1,24 @@
+const ENGLISH_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").flatMap((letter) => [
+  {
+    id: `en_upper_${letter.toLowerCase()}`,
+    type: "english",
+    display: letter,
+    hint: `${letter} uppercase`,
+    meaning: "大寫字母",
+    speakText: letter,
+    lang: "en-US"
+  },
+  {
+    id: `en_lower_${letter.toLowerCase()}`,
+    type: "english",
+    display: letter.toLowerCase(),
+    hint: `${letter.toLowerCase()} lowercase`,
+    meaning: "小寫字母",
+    speakText: letter.toLowerCase(),
+    lang: "en-US"
+  }
+]);
+
 const DEFAULT_LESSONS = [
   { id: "zh_wo", type: "chinese", display: "我", hint: "ㄨㄛˇ", meaning: "I / me", speakText: "我", lang: "zh-TW" },
   { id: "zh_ni", type: "chinese", display: "你", hint: "ㄋㄧˇ", meaning: "you", speakText: "你", lang: "zh-TW" },
@@ -10,7 +31,8 @@ const DEFAULT_LESSONS = [
   { id: "en_apple", type: "english", display: "apple", hint: "apple", meaning: "蘋果", speakText: "apple", lang: "en-US" },
   { id: "en_book", type: "english", display: "book", hint: "book", meaning: "書", speakText: "book", lang: "en-US" },
   { id: "en_cat", type: "english", display: "cat", hint: "cat", meaning: "貓", speakText: "cat", lang: "en-US" },
-  { id: "en_dog", type: "english", display: "dog", hint: "dog", meaning: "狗", speakText: "dog", lang: "en-US" }
+  { id: "en_dog", type: "english", display: "dog", hint: "dog", meaning: "狗", speakText: "dog", lang: "en-US" },
+  ...ENGLISH_LETTERS
 ];
 
 const TYPE_LABEL = {
@@ -21,13 +43,21 @@ const TYPE_LABEL = {
 
 const PROGRESS_KEY = "bula-teach-progress-v1";
 const CUSTOM_LESSONS_KEY = "bula-teach-custom-lessons-v1";
+const SETTINGS_KEY = "bula-teach-settings-v1";
+
+const DEFAULT_SETTINGS = {
+  autoPlay: false,
+  showTemplate: true
+};
 
 const state = {
   filter: "all",
   index: 0,
   drawing: false,
+  editingId: null,
   customLessons: loadCustomLessons(),
-  completed: new Set(loadProgress())
+  completed: new Set(loadProgress()),
+  settings: loadSettings()
 };
 
 const els = {
@@ -37,14 +67,23 @@ const els = {
   itemTitle: document.querySelector("#itemTitle"),
   hintText: document.querySelector("#hintText"),
   meaningText: document.querySelector("#meaningText"),
+  traceStage: document.querySelector("#traceStage"),
   traceText: document.querySelector("#traceText"),
   canvas: document.querySelector("#traceCanvas"),
   speakButton: document.querySelector("#speakButton"),
   clearButton: document.querySelector("#clearButton"),
+  templateButton: document.querySelector("#templateButton"),
+  settingsButton: document.querySelector("#settingsButton"),
+  settingsPanel: document.querySelector("#settingsPanel"),
+  autoPlayToggle: document.querySelector("#autoPlayToggle"),
+  templateToggle: document.querySelector("#templateToggle"),
   doneButton: document.querySelector("#doneButton"),
   prevButton: document.querySelector("#prevButton"),
   nextButton: document.querySelector("#nextButton"),
-  addLessonForm: document.querySelector("#addLessonForm"),
+  lessonForm: document.querySelector("#lessonForm"),
+  formTitle: document.querySelector("#formTitle"),
+  saveLessonButton: document.querySelector("#saveLessonButton"),
+  cancelEditButton: document.querySelector("#cancelEditButton"),
   customText: document.querySelector("#customText"),
   customType: document.querySelector("#customType"),
   customHint: document.querySelector("#customHint"),
@@ -68,9 +107,17 @@ function loadProgress() {
 function loadCustomLessons() {
   try {
     const items = JSON.parse(localStorage.getItem(CUSTOM_LESSONS_KEY) || "[]");
-    return Array.isArray(items) ? items.filter(isValidLesson) : [];
+    return Array.isArray(items) ? items.filter(isValidLesson).map((item) => ({ ...item, custom: true })) : [];
   } catch {
     return [];
+  }
+}
+
+function loadSettings() {
+  try {
+    return { ...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") };
+  } catch {
+    return { ...DEFAULT_SETTINGS };
   }
 }
 
@@ -86,6 +133,10 @@ function saveCustomLessons() {
   localStorage.setItem(CUSTOM_LESSONS_KEY, JSON.stringify(state.customLessons));
 }
 
+function saveSettings() {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+}
+
 function visibleLessons() {
   const lessons = allLessons();
   return state.filter === "all" ? lessons : lessons.filter((item) => item.type === state.filter);
@@ -96,15 +147,26 @@ function currentItem() {
   return items[Math.min(state.index, items.length - 1)] || allLessons()[0];
 }
 
-function createLessonButton(lesson, index, activeId) {
+function findVisibleIndexById(id) {
+  return Math.max(0, visibleLessons().findIndex((item) => item.id === id));
+}
+
+function createText(className, text) {
+  const node = document.createElement("span");
+  node.className = className;
+  node.textContent = text;
+  return node;
+}
+
+function createLessonItem(lesson, index, activeId) {
+  const row = document.createElement("div");
+  row.className = "lesson-item";
+
   const button = document.createElement("button");
-  button.className = `lesson-item${lesson.id === activeId ? " is-active" : ""}`;
+  button.className = `lesson-main${lesson.id === activeId ? " is-active" : ""}`;
   button.type = "button";
 
-  const glyph = document.createElement("span");
-  glyph.className = "lesson-glyph";
-  glyph.textContent = lesson.display;
-
+  const glyph = createText(`lesson-glyph${lesson.type === "english" ? " english" : ""}`, lesson.display);
   const meta = document.createElement("span");
   meta.className = "lesson-meta";
 
@@ -114,14 +176,38 @@ function createLessonButton(lesson, index, activeId) {
   const detail = document.createElement("span");
   detail.textContent = lesson.meaning || TYPE_LABEL[lesson.type];
 
-  const done = document.createElement("span");
-  done.className = "done-mark";
-  done.textContent = state.completed.has(lesson.id) ? "✓" : lesson.custom ? "+" : "";
+  const done = createText("done-mark", state.completed.has(lesson.id) ? "✓" : lesson.custom ? "+" : "");
 
   meta.append(title, detail);
   button.append(glyph, meta, done);
   button.addEventListener("click", () => selectItem(index));
-  return button;
+  row.append(button);
+
+  if (lesson.custom) {
+    const actions = document.createElement("div");
+    actions.className = "lesson-actions";
+
+    const edit = document.createElement("button");
+    edit.className = "lesson-action";
+    edit.type = "button";
+    edit.title = "編輯字卡";
+    edit.setAttribute("aria-label", `編輯 ${lesson.display}`);
+    edit.textContent = "✎";
+    edit.addEventListener("click", () => startEditLesson(lesson.id));
+
+    const remove = document.createElement("button");
+    remove.className = "lesson-action delete";
+    remove.type = "button";
+    remove.title = "刪除字卡";
+    remove.setAttribute("aria-label", `刪除 ${lesson.display}`);
+    remove.textContent = "×";
+    remove.addEventListener("click", () => deleteCustomLesson(lesson.id));
+
+    actions.append(edit, remove);
+    row.append(actions);
+  }
+
+  return row;
 }
 
 function renderLessonList() {
@@ -129,11 +215,26 @@ function renderLessonList() {
   els.lessonList.innerHTML = "";
 
   visibleLessons().forEach((lesson, index) => {
-    els.lessonList.append(createLessonButton(lesson, index, item.id));
+    els.lessonList.append(createLessonItem(lesson, index, item.id));
   });
 }
 
-function renderCurrentItem() {
+function renderSettings() {
+  els.autoPlayToggle.checked = state.settings.autoPlay;
+  els.templateToggle.checked = state.settings.showTemplate;
+  els.traceStage.classList.toggle("template-hidden", !state.settings.showTemplate);
+  els.templateButton.classList.toggle("is-active", state.settings.showTemplate);
+  els.templateButton.setAttribute("aria-pressed", String(state.settings.showTemplate));
+}
+
+function renderFormMode() {
+  const editing = Boolean(state.editingId);
+  els.formTitle.textContent = editing ? "編輯字卡" : "新增字卡";
+  els.saveLessonButton.textContent = editing ? "儲存修改" : "新增到清單";
+  els.cancelEditButton.classList.toggle("is-hidden", !editing);
+}
+
+function renderCurrentItem(options = {}) {
   const item = currentItem();
   els.itemType.textContent = TYPE_LABEL[item.type];
   els.itemTitle.textContent = item.display;
@@ -142,19 +243,24 @@ function renderCurrentItem() {
   els.traceText.textContent = item.display;
   els.traceText.classList.toggle("english", item.type === "english");
   els.doneButton.textContent = state.completed.has(item.id) ? "已完成" : "完成";
+  renderSettings();
   renderLessonList();
   clearCanvas();
+
+  if (options.autoSpeak && state.settings.autoPlay) {
+    window.setTimeout(speakCurrent, 120);
+  }
 }
 
 function selectItem(index) {
   state.index = index;
-  renderCurrentItem();
+  renderCurrentItem({ autoSpeak: true });
 }
 
 function moveItem(direction) {
   const items = visibleLessons();
   state.index = (state.index + direction + items.length) % items.length;
-  renderCurrentItem();
+  renderCurrentItem({ autoSpeak: true });
 }
 
 function resizeCanvas() {
@@ -238,7 +344,7 @@ function setFilter(filter) {
   document.querySelectorAll(".tab").forEach((tab) => {
     tab.classList.toggle("is-active", tab.dataset.filter === filter);
   });
-  renderCurrentItem();
+  renderCurrentItem({ autoSpeak: true });
 }
 
 function langForType(type) {
@@ -249,17 +355,16 @@ function meaningForType(type) {
   return type === "english" ? "custom word" : TYPE_LABEL[type];
 }
 
-function addCustomLesson(event) {
-  event.preventDefault();
-
+function lessonFromForm(id = null) {
   const display = els.customText.value.trim();
-  if (!display) return;
+  if (!display) return null;
 
   const type = els.customType.value;
   const hint = els.customHint.value.trim() || display;
   const speakText = els.customSpeak.value.trim() || hint || display;
-  const lesson = {
-    id: `custom_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+
+  return {
+    id: id || `custom_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     type,
     display,
     hint,
@@ -268,17 +373,84 @@ function addCustomLesson(event) {
     lang: langForType(type),
     custom: true
   };
+}
 
-  state.customLessons.push(lesson);
+function resetLessonForm() {
+  state.editingId = null;
+  els.lessonForm.reset();
+  renderFormMode();
+}
+
+function saveLessonFromForm(event) {
+  event.preventDefault();
+  const lesson = lessonFromForm(state.editingId);
+  if (!lesson) return;
+
+  if (state.editingId) {
+    const index = state.customLessons.findIndex((item) => item.id === state.editingId);
+    if (index >= 0) state.customLessons[index] = lesson;
+  } else {
+    state.customLessons.push(lesson);
+  }
+
   saveCustomLessons();
-  els.addLessonForm.reset();
-  els.customType.value = type;
-  state.filter = type;
-  state.index = visibleLessons().length - 1;
+  state.filter = lesson.type;
   document.querySelectorAll(".tab").forEach((tab) => {
-    tab.classList.toggle("is-active", tab.dataset.filter === type);
+    tab.classList.toggle("is-active", tab.dataset.filter === lesson.type);
   });
+  resetLessonForm();
+  state.index = findVisibleIndexById(lesson.id);
+  renderCurrentItem({ autoSpeak: true });
+}
+
+function startEditLesson(id) {
+  const lesson = state.customLessons.find((item) => item.id === id);
+  if (!lesson) return;
+
+  state.editingId = id;
+  els.customText.value = lesson.display;
+  els.customType.value = lesson.type;
+  els.customHint.value = lesson.hint || "";
+  els.customSpeak.value = lesson.speakText || "";
+  renderFormMode();
+  els.customText.focus();
+}
+
+function deleteCustomLesson(id) {
+  const lesson = state.customLessons.find((item) => item.id === id);
+  if (!lesson) return;
+
+  const confirmed = window.confirm(`刪除「${lesson.display}」？`);
+  if (!confirmed) return;
+
+  state.customLessons = state.customLessons.filter((item) => item.id !== id);
+  state.completed.delete(id);
+  saveCustomLessons();
+  saveProgress();
+  if (state.editingId === id) resetLessonForm();
+
+  const items = visibleLessons();
+  state.index = Math.min(state.index, Math.max(0, items.length - 1));
   renderCurrentItem();
+}
+
+function toggleTemplate() {
+  state.settings.showTemplate = !state.settings.showTemplate;
+  saveSettings();
+  renderSettings();
+}
+
+function toggleSettingsPanel() {
+  const hidden = els.settingsPanel.classList.toggle("is-hidden");
+  els.settingsButton.setAttribute("aria-expanded", String(!hidden));
+  els.settingsButton.classList.toggle("is-active", !hidden);
+}
+
+function updateSettingFromControls() {
+  state.settings.autoPlay = els.autoPlayToggle.checked;
+  state.settings.showTemplate = els.templateToggle.checked;
+  saveSettings();
+  renderSettings();
 }
 
 function updateOnlineStatus() {
@@ -300,13 +472,18 @@ document.querySelectorAll(".tab").forEach((tab) => {
   tab.addEventListener("click", () => setFilter(tab.dataset.filter));
 });
 
-els.addLessonForm.addEventListener("submit", addCustomLesson);
+els.lessonForm.addEventListener("submit", saveLessonFromForm);
+els.cancelEditButton.addEventListener("click", resetLessonForm);
 els.canvas.addEventListener("pointerdown", startDrawing);
 els.canvas.addEventListener("pointermove", draw);
 els.canvas.addEventListener("pointerup", stopDrawing);
 els.canvas.addEventListener("pointercancel", stopDrawing);
 els.speakButton.addEventListener("click", speakCurrent);
 els.clearButton.addEventListener("click", clearCanvas);
+els.templateButton.addEventListener("click", toggleTemplate);
+els.settingsButton.addEventListener("click", toggleSettingsPanel);
+els.autoPlayToggle.addEventListener("change", updateSettingFromControls);
+els.templateToggle.addEventListener("change", updateSettingFromControls);
 els.doneButton.addEventListener("click", markDone);
 els.prevButton.addEventListener("click", () => moveItem(-1));
 els.nextButton.addEventListener("click", () => moveItem(1));
@@ -318,6 +495,7 @@ window.addEventListener("online", updateOnlineStatus);
 window.addEventListener("offline", updateOnlineStatus);
 
 resizeCanvas();
+renderFormMode();
 renderCurrentItem();
 updateOnlineStatus();
 registerServiceWorker();

@@ -12,7 +12,7 @@
   </head>
   <body>
     <main class="app-shell">
-      <aside class="sidebar" aria-label="教材">
+      <aside class="sidebar" aria-label="教材管理">
         <div class="brand">
           <span class="brand-mark">字</span>
           <div>
@@ -21,53 +21,82 @@
           </div>
         </div>
 
-        <form class="add-form" id="addLessonForm" autocomplete="off">
-          <div class="field-row">
-            <label for="customText">新增字卡</label>
-            <input id="customText" name="customText" type="text" maxlength="18" placeholder="輸入字、注音或英文" required />
+        <section class="panel-section" aria-label="新增或編輯字卡">
+          <div class="section-head">
+            <h2 id="formTitle">新增字卡</h2>
+            <button class="ghost-button is-hidden" id="cancelEditButton" type="button">取消</button>
           </div>
-          <div class="field-grid">
-            <select id="customType" name="customType" aria-label="分類">
-              <option value="chinese">中文</option>
-              <option value="bopomofo">注音</option>
-              <option value="english">英文</option>
-            </select>
-            <input id="customHint" name="customHint" type="text" maxlength="24" placeholder="提示" />
-          </div>
-          <div class="field-grid">
-            <input id="customSpeak" name="customSpeak" type="text" maxlength="40" placeholder="發音文字" />
-            <button class="add-button" type="submit">新增</button>
-          </div>
-        </form>
+          <form class="lesson-form" id="lessonForm" autocomplete="off">
+            <label class="field-row" for="customText">
+              <span>描紅文字</span>
+              <input id="customText" name="customText" type="text" maxlength="18" placeholder="字、注音或英文" required />
+            </label>
+            <div class="field-grid">
+              <label for="customType">
+                <span>分類</span>
+                <select id="customType" name="customType">
+                  <option value="chinese">中文</option>
+                  <option value="bopomofo">注音</option>
+                  <option value="english">英文</option>
+                </select>
+              </label>
+              <label for="customHint">
+                <span>提示</span>
+                <input id="customHint" name="customHint" type="text" maxlength="24" placeholder="注音或意思" />
+              </label>
+            </div>
+            <label class="field-row" for="customSpeak">
+              <span>發音文字</span>
+              <input id="customSpeak" name="customSpeak" type="text" maxlength="40" placeholder="留空會使用提示或描紅文字" />
+            </label>
+            <button class="primary-button" id="saveLessonButton" type="submit">新增到清單</button>
+          </form>
+        </section>
 
-        <div class="tabs" role="tablist" aria-label="教材分類">
-          <button class="tab is-active" data-filter="all" type="button">全部</button>
-          <button class="tab" data-filter="chinese" type="button">中文</button>
-          <button class="tab" data-filter="bopomofo" type="button">注音</button>
-          <button class="tab" data-filter="english" type="button">英文</button>
-        </div>
-
-        <div class="lesson-list" id="lessonList" aria-label="字卡清單"></div>
+        <section class="panel-section lesson-panel" aria-label="字卡清單">
+          <div class="tabs" role="tablist" aria-label="教材分類">
+            <button class="tab is-active" data-filter="all" type="button">全部</button>
+            <button class="tab" data-filter="chinese" type="button">中文</button>
+            <button class="tab" data-filter="bopomofo" type="button">注音</button>
+            <button class="tab" data-filter="english" type="button">英文</button>
+          </div>
+          <div class="lesson-list" id="lessonList" aria-label="字卡清單"></div>
+        </section>
       </aside>
 
       <section class="workspace" aria-label="描寫練習">
         <header class="topbar">
-          <div>
+          <div class="title-block">
             <p class="eyebrow" id="itemType">中文</p>
             <h2 id="itemTitle">我</h2>
           </div>
-          <div class="actions">
-            <button class="icon-button" id="speakButton" type="button" aria-label="播放發音" title="播放發音">
-              <span aria-hidden="true">▶</span>
-            </button>
-            <button class="icon-button" id="clearButton" type="button" aria-label="清除筆跡" title="清除筆跡">
-              <span aria-hidden="true">↺</span>
-            </button>
-            <button class="text-button" id="doneButton" type="button">完成</button>
+          <div class="toolbar" aria-label="練習工具">
+            <button class="tool-button" id="speakButton" type="button" aria-label="播放發音" title="播放發音">▶</button>
+            <button class="tool-button" id="clearButton" type="button" aria-label="清除筆跡" title="清除筆跡">↺</button>
+            <button class="tool-button" id="templateButton" type="button" aria-label="顯示或隱藏底稿" title="顯示或隱藏底稿">字</button>
+            <button class="tool-button" id="settingsButton" type="button" aria-label="開啟設定" aria-expanded="false" title="設定">⚙</button>
+            <button class="primary-button compact" id="doneButton" type="button">完成</button>
           </div>
         </header>
 
-        <div class="trace-stage">
+        <section class="settings-panel is-hidden" id="settingsPanel" aria-label="設定">
+          <label class="switch-row">
+            <span>
+              <strong>切換字卡自動播放</strong>
+              <small>上一個、下一個或點選字卡時先念一次</small>
+            </span>
+            <input id="autoPlayToggle" type="checkbox" />
+          </label>
+          <label class="switch-row">
+            <span>
+              <strong>顯示描紅底稿</strong>
+              <small>隱藏後只保留格線與你的筆跡</small>
+            </span>
+            <input id="templateToggle" type="checkbox" />
+          </label>
+        </section>
+
+        <div class="trace-stage" id="traceStage">
           <div class="guide-lines" aria-hidden="true"></div>
           <div class="trace-text" id="traceText" aria-hidden="true">我</div>
           <canvas id="traceCanvas" aria-label="描寫區"></canvas>

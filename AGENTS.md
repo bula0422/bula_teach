@@ -91,3 +91,12 @@ node --check sw.js
 The app supports user-added lessons from the sidebar form. Custom lessons are stored in `localStorage` under `bula-teach-custom-lessons-v1` and are intentionally device-local. Do not add backend sync unless the user asks for multi-device use.
 
 When rendering user-provided text, use DOM APIs and `textContent`; do not inject user input through `innerHTML`.
+
+
+## Settings
+
+User settings are stored in `localStorage` under `bula-teach-settings-v1`. Current settings are `autoPlay` and `showTemplate`. Keep settings device-local unless the user asks for sync.
+
+The template visibility control must update both the toolbar button and the settings checkbox. Auto-play should only trigger when changing cards, not on the first page load.
+
+English defaults include uppercase and lowercase A-Z generated in `app.js`. Keep English tracing in Arial unless the user asks for a different font.
