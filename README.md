@@ -1,0 +1,66 @@
+# Bula Teach
+
+離線描紅與發音練習 PWA。這個版本是純靜態網站，不需要後端、不需要帳號，也不需要 build step。
+
+## 本機測試
+
+```bash
+python3 -m http.server 5173
+```
+
+開啟：
+
+```text
+http://localhost:5173/
+```
+
+## Cloudflare Pages 部署
+
+建議設定：
+
+```text
+Framework preset: None
+Build command: 留空
+Build output directory: /
+Root directory: /
+```
+
+部署完成後，用 iPad Safari 開啟 Cloudflare Pages 的 HTTPS 網址，例如：
+
+```text
+https://your-project.pages.dev/
+```
+
+然後使用 Safari 的分享選單，選「加入主畫面」。第一次開啟需要網路，之後已快取的 app 可離線使用。
+
+## 更新教材
+
+教材目前在 `app.js` 的 `LESSONS` 陣列內。每一筆資料格式如下：
+
+```js
+{
+  id: "zh_wo",
+  type: "chinese",
+  display: "我",
+  hint: "ㄨㄛˇ",
+  meaning: "I / me",
+  speakText: "我",
+  lang: "zh-TW"
+}
+```
+
+`type` 可使用：
+
+```text
+chinese
+bopomofo
+english
+```
+
+`display` 是畫面上描紅的大字，`speakText` 是實際交給系統 TTS 念的文字。注音符號建議用「波、坡、摸」這類較容易被 TTS 正確念出的文字。
+
+## 字型
+
+目前沒有內嵌字型檔，使用 iPad 或系統內建字型做描紅底稿。這樣最簡單，也不需要處理字型授權。
+
+如果之後需要每台裝置顯示完全一致，可以加入有授權的字型檔，再於 `styles.css` 使用 `@font-face`。

@@ -1,0 +1,312 @@
+:root {
+  color-scheme: light;
+  --bg: #f7f3ea;
+  --panel: #fffdfa;
+  --ink: #24302f;
+  --muted: #66716f;
+  --line: #d9d1c3;
+  --accent: #17736b;
+  --accent-strong: #0f5d57;
+  --paper: #fffaf0;
+  --shadow: 0 18px 50px rgba(58, 48, 33, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: minmax(230px, 300px) 1fr;
+  gap: 18px;
+  height: 100dvh;
+  padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+}
+
+.sidebar,
+.workspace {
+  min-height: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", serif;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+.brand p,
+.eyebrow,
+.study-info span {
+  color: var(--muted);
+}
+
+.brand p {
+  margin-top: 3px;
+  font-size: 13px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.tab,
+.nav-button,
+.text-button,
+.icon-button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tab {
+  min-height: 38px;
+  padding: 0 7px;
+  font-size: 14px;
+}
+
+.tab.is-active,
+.text-button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.lesson-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.lesson-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 58px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+}
+
+.lesson-item.is-active {
+  border-color: var(--accent);
+  outline: 2px solid rgba(23, 115, 107, 0.14);
+}
+
+.lesson-glyph {
+  font-family: "PingFang TC", "DFKai-SB", "BiauKai", "Times New Roman", serif;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.lesson-meta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lesson-meta strong,
+.lesson-meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lesson-meta span,
+.done-mark {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: 18px;
+}
+
+.topbar,
+.study-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.eyebrow {
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+h2 {
+  font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Georgia, serif;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.text-button,
+.nav-button {
+  min-height: 48px;
+  padding: 0 18px;
+  font-weight: 700;
+}
+
+.trace-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  margin: 18px 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.guide-lines {
+  position: absolute;
+  inset: 7%;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(23, 115, 107, 0.2) calc(50% - 1px), rgba(23, 115, 107, 0.2) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(0deg, transparent calc(50% - 1px), rgba(23, 115, 107, 0.2) calc(50% - 1px), rgba(23, 115, 107, 0.2) calc(50% + 1px), transparent calc(50% + 1px));
+  border: 2px dashed rgba(23, 115, 107, 0.24);
+}
+
+.trace-text {
+  position: absolute;
+  max-width: 92%;
+  color: rgba(36, 48, 47, 0.14);
+  font-family: "PingFang TC", "DFKai-SB", "BiauKai", "Noto Serif TC", "Times New Roman", serif;
+  font-size: clamp(120px, 35dvh, 360px);
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+
+.trace-text.english {
+  font-family: "Comic Sans MS", "Marker Felt", "Bradley Hand", cursive;
+  font-size: clamp(88px, 22dvh, 220px);
+  font-weight: 700;
+}
+
+#traceCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.study-bar {
+  min-height: 64px;
+}
+
+.study-info {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.study-info strong {
+  font-size: 22px;
+}
+
+@media (max-width: 760px) {
+  body {
+    overflow: auto;
+  }
+
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(520px, 1fr);
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .sidebar {
+    max-height: 230px;
+  }
+
+  .lesson-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

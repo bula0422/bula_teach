@@ -1,0 +1,17 @@
+{
+  "name": "Bula Teach",
+  "short_name": "Bula Teach",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f3ea",
+  "theme_color": "#f7f3ea",
+  "description": "離線描紅與發音練習",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
