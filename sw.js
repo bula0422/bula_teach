@@ -1,10 +1,14 @@
-const CACHE_NAME = "bula-teach-v12";
+const CACHE_NAME = "bula-teach-v13";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./manifest.webmanifest",
+  "./apple-touch-icon.png",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./app-icon.png",
   "./math/",
   "./math/index.html",
   "./math/math.css",
