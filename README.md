@@ -79,6 +79,7 @@ word      英文單字，可新增、編輯、刪除、匯入匯出
   category: "hanzi",
   display: "我",
   hint: "ㄨㄛˇ",
+  pinyin: "wǒ",
   meaning: "I / me",
   speakText: "我",
   lang: "zh-TW"
@@ -128,6 +129,8 @@ bula-teach-backup-state-v1
 - 匯出：下載 `bula-teach-lessons.json`
 - 匯入：從 JSON 檔載入國字與英文單字
 - 載入預設：用內建的小學基礎國字與英文單字 starter set 取代目前可編輯教材
+
+國字會顯示注音與羅馬拼音，例如 `ㄨㄛˇ · wǒ`。英文單字會顯示 KK / 近似音標。
 
 匯出內容只包含可編輯的 `hanzi` 與 `word`，不包含固定的注音與字母。
 

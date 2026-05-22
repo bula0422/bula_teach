@@ -221,6 +221,20 @@ const CATEGORY_LABELS = {
   word: "英文單字"
 };
 const CATEGORY_ORDER = ["bopomofo", "letter", "hanzi", "word"];
+const HANZI_PINYIN = {
+  "我": "wǒ", "你": "nǐ", "他": "tā", "她": "tā", "是": "shì", "不": "bù", "有": "yǒu", "在": "zài",
+  "人": "rén", "大": "dà", "小": "xiǎo", "上": "shàng", "下": "xià", "中": "zhōng", "天": "tiān", "地": "dì",
+  "日": "rì", "月": "yuè", "山": "shān", "水": "shuǐ", "火": "huǒ", "木": "mù", "土": "tǔ", "金": "jīn",
+  "口": "kǒu", "手": "shǒu", "目": "mù", "耳": "ěr", "足": "zú", "心": "xīn", "門": "mén", "車": "chē",
+  "馬": "mǎ", "鳥": "niǎo", "魚": "yú", "蟲": "chóng", "花": "huā", "草": "cǎo", "米": "mǐ", "飯": "fàn",
+  "果": "guǒ", "愛": "ài", "好": "hǎo", "來": "lái", "去": "qù", "看": "kàn", "聽": "tīng", "說": "shuō",
+  "寫": "xiě", "讀": "dú", "學": "xué", "問": "wèn", "校": "xiào", "家": "jiā", "爸": "bà", "媽": "mā",
+  "哥": "gē", "姐": "jiě", "弟": "dì", "妹": "mèi", "朋": "péng", "友": "yǒu", "年": "nián", "今": "jīn",
+  "明": "míng", "早": "zǎo", "晚": "wǎn", "七": "qī", "一": "yī", "二": "èr", "三": "sān", "四": "sì",
+  "五": "wǔ", "六": "liù", "八": "bā", "九": "jiǔ", "十": "shí", "百": "bǎi", "千": "qiān", "多": "duō",
+  "少": "shǎo", "長": "cháng", "短": "duǎn", "高": "gāo", "低": "dī", "紅": "hóng", "白": "bái", "黑": "hēi",
+  "藍": "lán", "綠": "lǜ", "雨": "yǔ", "風": "fēng"
+};
 const LESSONS_KEY = "bula-teach-lessons-v2";
 const SETTINGS_KEY = "bula-teach-settings-v1";
 const BACKUP_KEY = "bula-teach-backup-state-v1";
@@ -265,6 +279,8 @@ const els = {
   customCategory: document.querySelector("#customCategory"),
   customHint: document.querySelector("#customHint"),
   customHintLabel: document.querySelector("#customHintLabel"),
+  customPinyin: document.querySelector("#customPinyin"),
+  hanziExtraField: document.querySelector(".hanzi-extra-field"),
   customMeaning: document.querySelector("#customMeaning"),
   customMeaningLabel: document.querySelector("#customMeaningLabel"),
   customSpeak: document.querySelector("#customSpeak"),
@@ -283,7 +299,7 @@ const ctx = els.canvas.getContext("2d");
 
 function normalizeLegacyLesson(item) {
   const category = item.category || (item.type === "bopomofo" ? "bopomofo" : item.type === "chinese" ? "hanzi" : "word");
-  return { ...item, category, lang: item.lang || (category === "word" || category === "letter" ? "en-US" : "zh-TW") };
+  return { ...item, category, pinyin: item.pinyin || (category === "hanzi" ? HANZI_PINYIN[item.display] : undefined), lang: item.lang || (category === "word" || category === "letter" ? "en-US" : "zh-TW") };
 }
 
 function loadLessons() {
@@ -298,7 +314,7 @@ function loadLessons() {
     }
   } catch {}
 
-  return [...fixedLessons, ...editableDefaults.map((item) => ({ ...item }))];
+  return [...fixedLessons, ...editableDefaults.map((item) => normalizeLegacyLesson({ ...item }))];
 }
 
 function loadSettings() {
@@ -357,7 +373,7 @@ function lessonsFor(category = activeCategory()) {
 function matchesSearch(lesson) {
   const query = state.search.trim().toLowerCase();
   if (!query) return true;
-  return [lesson.display, lesson.hint, lesson.meaning, lesson.speakText]
+  return [lesson.display, lesson.hint, lesson.pinyin, lesson.meaning, lesson.speakText]
     .filter(Boolean)
     .some((value) => String(value).toLowerCase().includes(query));
 }
@@ -473,6 +489,11 @@ function renderBackupStatus() {
   els.backupStatus.textContent = "本機教材尚未匯出";
 }
 
+function formatHint(item) {
+  if (item.category === "hanzi" && item.pinyin) return `${item.hint || item.display} · ${item.pinyin}`;
+  return item.hint || item.display;
+}
+
 function renderFormMode() {
   const editing = Boolean(state.editingId);
   els.formTitle.textContent = editing ? "編輯字卡" : "新增字卡";
@@ -485,6 +506,7 @@ function updateFormLabels() {
   const isWord = els.customCategory.value === "word";
   els.customHintLabel.textContent = isWord ? "KK 音標" : "注音";
   els.customHint.placeholder = isWord ? "例如 [ˋæpəl]" : "例如 ㄨㄛˇ";
+  els.hanziExtraField.classList.toggle("is-hidden", isWord);
   els.customMeaningLabel.textContent = isWord ? "中文意思" : "意思";
   els.customMeaning.placeholder = isWord ? "例如 蘋果" : "例如 I / me";
   els.customSpeak.placeholder = isWord ? "留空使用英文單字" : "留空使用國字";
@@ -494,7 +516,7 @@ function renderCurrent(options = {}) {
   const item = currentItem();
   els.itemType.textContent = CATEGORY_LABELS[item.category];
   els.itemTitle.textContent = item.display;
-  els.hintText.textContent = item.hint || item.display;
+  els.hintText.textContent = formatHint(item);
   els.meaningText.textContent = item.meaning || CATEGORY_LABELS[item.category];
   els.traceText.textContent = item.display;
   els.traceText.className = `trace-text ${item.category}`;
@@ -598,6 +620,7 @@ function lessonFromForm(id = null) {
     category,
     display,
     hint: els.customHint.value.trim() || display,
+    pinyin: category === "hanzi" ? (els.customPinyin.value.trim() || HANZI_PINYIN[display] || "") : undefined,
     meaning: els.customMeaning.value.trim() || CATEGORY_LABELS[category],
     speakText: els.customSpeak.value.trim() || display,
     lang: langForCategory(category),
@@ -626,6 +649,7 @@ function startEdit(id) {
   els.customText.value = lesson.display;
   els.customCategory.value = lesson.category;
   els.customHint.value = lesson.hint || "";
+  els.customPinyin.value = lesson.pinyin || "";
   els.customMeaning.value = lesson.meaning || "";
   els.customSpeak.value = lesson.speakText || "";
   renderFormMode();
@@ -681,7 +705,7 @@ function importLessonsFromFile(file) {
 function resetEditableDefaults() {
   if (!window.confirm("載入預設國字與英文單字？目前編輯過的國字與英文單字會被取代。")) return;
   const fixed = state.lessons.filter((item) => !isEditableLesson(item));
-  const defaults = BASE_LESSONS.filter(isEditableLesson).map((item) => ({ ...item }));
+  const defaults = BASE_LESSONS.filter(isEditableLesson).map((item) => normalizeLegacyLesson({ ...item }));
   state.lessons = [...fixed, ...defaults];
   saveLessons();
   state.category = "hanzi";

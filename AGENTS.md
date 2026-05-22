@@ -47,13 +47,14 @@ Editable lesson example:
   category: "hanzi",
   display: "我",
   hint: "ㄨㄛˇ",
+  pinyin: "wǒ",
   meaning: "I / me",
   speakText: "我",
   lang: "zh-TW"
 }
 ```
 
-Only `hanzi` and `word` should appear in the management form and backup payload. Bopomofo and letters are fixed source data.
+Only `hanzi` and `word` should appear in the management form and backup payload. Bopomofo and letters are fixed source data. Hanzi cards may include `pinyin`, displayed next to zhuyin in the card info area.
 
 The built-in hanzi and word lessons are a practical elementary starter set, not an official complete curriculum list. Keep this wording unless a verified official source is added.
 
