@@ -1,10 +1,14 @@
-const CACHE_NAME = "bula-teach-v11";
+const CACHE_NAME = "bula-teach-v12";
 const APP_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./manifest.webmanifest",
+  "./math/",
+  "./math/index.html",
+  "./math/math.css",
+  "./math/math.js",
   "./assets/THIRD_PARTY_NOTICES.md",
   "./assets/audio/bopomofo/F1.WAV",
   "./assets/audio/bopomofo/F2.WAV",

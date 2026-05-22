@@ -16,6 +16,7 @@ This project is intentionally static and dependency-free:
 - `_headers` contains Cloudflare response headers.
 - `assets/audio/bopomofo/` contains copied bopomofo WAV files.
 - `assets/THIRD_PARTY_NOTICES.md` contains third-party attribution.
+- `math/` contains the arithmetic practice page served at `/math/`.
 
 Do not add a framework or build step unless the app has grown enough to justify it.
 
@@ -108,11 +109,23 @@ Default bopomofo lessons use Ministry of Education audio copied into `assets/aud
 
 If audio assets are added or renamed, update `APP_ASSETS` in `sw.js` and bump `CACHE_NAME` so installed PWAs refresh their cache.
 
+## Math Page
+
+The `/math/` page is part of the same static deployment. It is intentionally separate from the tracing app files:
+
+- `math/index.html`
+- `math/math.css`
+- `math/math.js`
+
+It provides single-question arithmetic practice for addition, subtraction, multiplication, division, and mixed operations. The right-side workspace includes a full-page handwriting canvas, answer input, completion check, next-question flow, and local statistics stored in `localStorage` under `bula-math-stats-v1`.
+
+Keep `/math/` assets listed in `APP_ASSETS` so the page works offline with the rest of the PWA.
+
 ## Deployment
 
 The app can be deployed as a static Cloudflare Pages project or via Cloudflare Workers/Wrangler. HTTPS is required for reliable PWA Service Worker behavior on iPad Safari.
 
-When changing core app files or precached assets, bump `CACHE_NAME` in `sw.js`.
+When changing core app files, `/math/` files, or precached assets, update `APP_ASSETS` as needed and bump `CACHE_NAME` in `sw.js`.
 
 ## Verification
 
@@ -121,6 +134,7 @@ Before finishing a code change, run:
 ```bash
 node --check app.js
 node --check sw.js
+node --check math/math.js
 ```
 
 For static serving checks, use the local server if it is running:
