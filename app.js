@@ -358,7 +358,8 @@ const LESSONS_KEY = "bula-teach-lessons-v2";
 const SETTINGS_KEY = "bula-teach-settings-v1";
 const BACKUP_KEY = "bula-teach-backup-state-v1";
 const EXPORT_VERSION = 1;
-const DEFAULT_SETTINGS = { autoPlay: false, showTemplate: true };
+const GRID_SIZES = [2, 4, 16];
+const DEFAULT_SETTINGS = { autoPlay: false, showTemplate: true, gridSize: 2 };
 
 const state = {
   lessons: loadLessons(),
@@ -385,6 +386,7 @@ const els = {
   speakButton: document.querySelector("#speakButton"),
   clearButton: document.querySelector("#clearButton"),
   templateButton: document.querySelector("#templateButton"),
+  gridButton: document.querySelector("#gridButton"),
   prevButton: document.querySelector("#prevButton"),
   nextButton: document.querySelector("#nextButton"),
   manageButton: document.querySelector("#manageButton"),
@@ -438,7 +440,9 @@ function loadLessons() {
 
 function loadSettings() {
   try {
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") };
+    const settings = { ...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") };
+    if (!GRID_SIZES.includes(settings.gridSize)) settings.gridSize = DEFAULT_SETTINGS.gridSize;
+    return settings;
   } catch {
     return { ...DEFAULT_SETTINGS };
   }
@@ -592,7 +596,9 @@ function renderCustomList() {
 function renderSettings() {
   els.autoPlayToggle.checked = state.settings.autoPlay;
   els.traceStage.classList.toggle("template-hidden", !state.settings.showTemplate);
+  els.traceStage.dataset.grid = String(state.settings.gridSize);
   els.templateButton.classList.toggle("is-active", state.settings.showTemplate);
+  els.gridButton.textContent = `${state.settings.gridSize}×${state.settings.gridSize}`;
 }
 
 function renderBackupStatus() {
@@ -866,6 +872,13 @@ function toggleTemplate() {
   renderSettings();
 }
 
+function cycleGridSize() {
+  const index = GRID_SIZES.indexOf(state.settings.gridSize);
+  state.settings.gridSize = GRID_SIZES[(index + 1) % GRID_SIZES.length];
+  saveSettings();
+  renderSettings();
+}
+
 function updateOnlineStatus() {
   els.offlineStatus.textContent = navigator.onLine ? "可離線使用" : "離線中";
 }
@@ -884,6 +897,7 @@ els.canvas.addEventListener("pointercancel", stopDrawing);
 els.speakButton.addEventListener("click", speakCurrent);
 els.clearButton.addEventListener("click", clearCanvas);
 els.templateButton.addEventListener("click", toggleTemplate);
+els.gridButton.addEventListener("click", cycleGridSize);
 els.prevButton.addEventListener("click", () => selectRelative(-1));
 els.nextButton.addEventListener("click", () => selectRelative(1));
 els.manageButton.addEventListener("click", () => els.manageDialog.showModal());

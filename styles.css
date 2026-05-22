@@ -188,10 +188,24 @@ h1 { font-size: 20px; }
 .guide-lines {
   position: absolute;
   inset: 7%;
+  border: 2px dashed rgba(21, 115, 106, 0.24);
+}
+.trace-stage[data-grid="2"] .guide-lines {
   background:
     linear-gradient(90deg, transparent calc(50% - 1px), rgba(21, 115, 106, 0.2) calc(50% - 1px), rgba(21, 115, 106, 0.2) calc(50% + 1px), transparent calc(50% + 1px)),
     linear-gradient(0deg, transparent calc(50% - 1px), rgba(21, 115, 106, 0.2) calc(50% - 1px), rgba(21, 115, 106, 0.2) calc(50% + 1px), transparent calc(50% + 1px));
-  border: 2px dashed rgba(21, 115, 106, 0.24);
+}
+.trace-stage[data-grid="4"] .guide-lines {
+  background-image:
+    linear-gradient(rgba(21, 115, 106, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21, 115, 106, 0.16) 1px, transparent 1px);
+  background-size: 25% 25%;
+}
+.trace-stage[data-grid="16"] .guide-lines {
+  background-image:
+    linear-gradient(rgba(21, 115, 106, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21, 115, 106, 0.12) 1px, transparent 1px);
+  background-size: 6.25% 6.25%;
 }
 .trace-text {
   position: absolute;
@@ -226,7 +240,7 @@ h1 { font-size: 20px; }
 .float-nav.left { left: 14px; }
 .float-nav.right { right: 14px; }
 .float-tools { position: absolute; top: 14px; right: 14px; z-index: 4; display: flex; gap: 8px; }
-.float-tool { display: grid; place-items: center; width: 48px; height: 48px; background: rgba(255, 253, 250, 0.92); color: var(--accent); font-size: 19px; font-weight: 900; }
+.float-tool { display: grid; place-items: center; width: 52px; height: 48px; background: rgba(255, 253, 250, 0.92); color: var(--accent); font-size: 18px; font-weight: 900; }
 .float-tool.is-active { border-color: var(--accent); background: rgba(21, 115, 106, 0.13); }
 
 .modal {
