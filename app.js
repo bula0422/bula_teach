@@ -1,3 +1,52 @@
+const BOPOMOFO_LESSONS = [
+  ["ㄅ", "F1.WAV"],
+  ["ㄆ", "F2.WAV"],
+  ["ㄇ", "F3.WAV"],
+  ["ㄈ", "F4.WAV"],
+  ["ㄉ", "F5.WAV"],
+  ["ㄊ", "F6.WAV"],
+  ["ㄋ", "F7.WAV"],
+  ["ㄌ", "F8.WAV"],
+  ["ㄍ", "F9.WAV"],
+  ["ㄎ", "F10.WAV"],
+  ["ㄏ", "F11.WAV"],
+  ["ㄐ", "F12.WAV"],
+  ["ㄑ", "F13.WAV"],
+  ["ㄒ", "F14.WAV"],
+  ["ㄓ", "F15.WAV"],
+  ["ㄔ", "F16.WAV"],
+  ["ㄕ", "F17.WAV"],
+  ["ㄖ", "F18.WAV"],
+  ["ㄗ", "F19.WAV"],
+  ["ㄘ", "F20.WAV"],
+  ["ㄙ", "F21.WAV"],
+  ["ㄧ", "F22.WAV"],
+  ["ㄨ", "F23.WAV"],
+  ["ㄩ", "F24.WAV"],
+  ["ㄚ", "F25.WAV"],
+  ["ㄛ", "F26.WAV"],
+  ["ㄜ", "F27.WAV"],
+  ["ㄝ", "F28.WAV"],
+  ["ㄞ", "F29.WAV"],
+  ["ㄟ", "F30.WAV"],
+  ["ㄠ", "F31.WAV"],
+  ["ㄡ", "F32.WAV"],
+  ["ㄢ", "F33.WAV"],
+  ["ㄣ", "F34.WAV"],
+  ["ㄤ", "F35.WAV"],
+  ["ㄥ", "F36.WAV"],
+  ["ㄦ", "F37.WAV"]
+].map(([symbol, file], index) => ({
+  id: `bpmf_${index + 1}`,
+  type: "bopomofo",
+  display: symbol,
+  hint: symbol,
+  meaning: "教育部注音發音",
+  speakText: symbol,
+  lang: "zh-TW",
+  audioUrl: `./assets/audio/bopomofo/${file}`
+}));
+
 const ENGLISH_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").flatMap((letter) => [
   {
     id: `en_upper_${letter.toLowerCase()}`,
@@ -24,10 +73,7 @@ const DEFAULT_LESSONS = [
   { id: "zh_ni", type: "chinese", display: "你", hint: "ㄋㄧˇ", meaning: "you", speakText: "你", lang: "zh-TW" },
   { id: "zh_ai", type: "chinese", display: "愛", hint: "ㄞˋ", meaning: "love", speakText: "愛", lang: "zh-TW" },
   { id: "zh_ren", type: "chinese", display: "人", hint: "ㄖㄣˊ", meaning: "person", speakText: "人", lang: "zh-TW" },
-  { id: "bo_po", type: "bopomofo", display: "ㄅ", hint: "波", meaning: "bopomofo", speakText: "波", lang: "zh-TW" },
-  { id: "po_po", type: "bopomofo", display: "ㄆ", hint: "坡", meaning: "bopomofo", speakText: "坡", lang: "zh-TW" },
-  { id: "mo_mo", type: "bopomofo", display: "ㄇ", hint: "摸", meaning: "bopomofo", speakText: "摸", lang: "zh-TW" },
-  { id: "fo_fo", type: "bopomofo", display: "ㄈ", hint: "佛", meaning: "bopomofo", speakText: "佛", lang: "zh-TW" },
+  ...BOPOMOFO_LESSONS,
   { id: "en_apple", type: "english", display: "apple", hint: "apple", meaning: "蘋果", speakText: "apple", lang: "en-US" },
   { id: "en_book", type: "english", display: "book", hint: "book", meaning: "書", speakText: "book", lang: "en-US" },
   { id: "en_cat", type: "english", display: "cat", hint: "cat", meaning: "貓", speakText: "cat", lang: "en-US" },
@@ -318,12 +364,23 @@ function clearCanvas() {
 
 function speakCurrent() {
   const item = currentItem();
+  window.speechSynthesis?.cancel();
+
+  if (item.audioUrl) {
+    const audio = new Audio(item.audioUrl);
+    audio.play().catch(() => speakWithTts(item));
+    return;
+  }
+
+  speakWithTts(item);
+}
+
+function speakWithTts(item) {
   if (!("speechSynthesis" in window)) {
     window.alert("這個瀏覽器不支援文字轉語音。");
     return;
   }
 
-  window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(item.speakText || item.display);
   utterance.lang = item.lang;
   utterance.rate = item.type === "english" ? 0.82 : 0.78;

@@ -100,3 +100,10 @@ User settings are stored in `localStorage` under `bula-teach-settings-v1`. Curre
 The template visibility control must update both the toolbar button and the settings checkbox. Auto-play should only trigger when changing cards, not on the first page load.
 
 English defaults include uppercase and lowercase A-Z generated in `app.js`. Keep English tracing in Arial unless the user asks for a different font.
+
+
+## Bopomofo Audio Assets
+
+Default bopomofo lessons use Ministry of Education audio copied into `assets/audio/bopomofo/`. Keep the attribution in `assets/THIRD_PARTY_NOTICES.md` whenever these assets are shipped.
+
+For bopomofo playback, prefer `audioUrl` over TTS. If new required audio assets are added, update `APP_ASSETS` in `sw.js` and bump `CACHE_NAME` so installed PWAs refresh their cache.
