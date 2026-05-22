@@ -21,6 +21,11 @@
           </div>
         </div>
 
+        <div class="search-box">
+          <label for="searchInput">搜尋字卡</label>
+          <input id="searchInput" type="search" placeholder="搜尋文字、提示或意思" />
+        </div>
+
         <nav class="category-list" id="categoryList" aria-label="字卡列表"></nav>
 
         <div class="sidebar-actions">
@@ -77,14 +82,14 @@
             </select>
           </label>
           <label for="customHint">
-            <span>提示 / 注音 / KK</span>
-            <input id="customHint" name="customHint" type="text" maxlength="40" placeholder="例如 ㄨㄛˇ 或 [ˋæpəl]" />
+            <span id="customHintLabel">注音</span>
+            <input id="customHint" name="customHint" type="text" maxlength="40" placeholder="例如 ㄨㄛˇ" />
           </label>
         </div>
         <div class="field-grid">
           <label for="customMeaning">
-            <span>意思</span>
-            <input id="customMeaning" name="customMeaning" type="text" maxlength="40" placeholder="中文意思" />
+            <span id="customMeaningLabel">意思</span>
+            <input id="customMeaning" name="customMeaning" type="text" maxlength="40" placeholder="意思" />
           </label>
           <label for="customSpeak">
             <span>發音文字</span>

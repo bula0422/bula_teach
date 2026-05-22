@@ -55,12 +55,14 @@ const state = {
   index: 0,
   drawing: false,
   editingId: null,
+  search: "",
   settings: loadSettings()
 };
 
 const els = {
   offlineStatus: document.querySelector("#offlineStatus"),
   categoryList: document.querySelector("#categoryList"),
+  searchInput: document.querySelector("#searchInput"),
   itemType: document.querySelector("#itemType"),
   itemTitle: document.querySelector("#itemTitle"),
   hintText: document.querySelector("#hintText"),
@@ -83,7 +85,9 @@ const els = {
   customText: document.querySelector("#customText"),
   customCategory: document.querySelector("#customCategory"),
   customHint: document.querySelector("#customHint"),
+  customHintLabel: document.querySelector("#customHintLabel"),
   customMeaning: document.querySelector("#customMeaning"),
+  customMeaningLabel: document.querySelector("#customMeaningLabel"),
   customSpeak: document.querySelector("#customSpeak"),
   customList: document.querySelector("#customList"),
   settingsButton: document.querySelector("#settingsButton"),
@@ -104,7 +108,7 @@ function loadLessons() {
 
   try {
     const saved = JSON.parse(localStorage.getItem(LESSONS_KEY) || "null");
-    if (Array.isArray(saved) && saved.length) {
+    if (Array.isArray(saved)) {
       const editable = saved.map(normalizeLegacyLesson).filter(isEditableLesson);
       return [...fixedLessons, ...editable];
     }
@@ -145,6 +149,18 @@ function lessonsFor(category = activeCategory()) {
   return state.lessons.filter((item) => item.category === category);
 }
 
+function matchesSearch(lesson) {
+  const query = state.search.trim().toLowerCase();
+  if (!query) return true;
+  return [lesson.display, lesson.hint, lesson.meaning, lesson.speakText]
+    .filter(Boolean)
+    .some((value) => String(value).toLowerCase().includes(query));
+}
+
+function visibleLessonsFor(category) {
+  return lessonsFor(category).filter(matchesSearch);
+}
+
 function currentItem() {
   const category = state.category || state.lessons[0]?.category;
   const items = state.lessons.filter((item) => item.category === category);
@@ -167,7 +183,7 @@ function renderCategoryList() {
     const header = document.createElement("button");
     header.className = `category-header${state.category === category ? " is-open" : ""}`;
     header.type = "button";
-    header.textContent = `${CATEGORY_LABELS[category]} (${lessonsFor(category).length})`;
+    header.textContent = `${CATEGORY_LABELS[category]} (${visibleLessonsFor(category).length})`;
     header.addEventListener("click", () => {
       if (state.category === category) {
         state.category = null;
@@ -183,7 +199,8 @@ function renderCategoryList() {
     if (state.category === category) {
       const list = document.createElement("div");
       list.className = "category-items";
-      lessonsFor(category).forEach((lesson, index) => {
+      visibleLessonsFor(category).forEach((lesson) => {
+        const index = lessonsFor(category).findIndex((item) => item.id === lesson.id);
         const button = document.createElement("button");
         button.className = `card-row${lesson.id === current.id ? " is-active" : ""}`;
         button.type = "button";
@@ -211,12 +228,23 @@ function renderCustomList() {
     const info = document.createElement("div");
     info.className = "manage-info";
     info.append(makeSpan("manage-title", lesson.display), makeSpan("manage-meta", `${CATEGORY_LABELS[lesson.category]} · ${lesson.hint || lesson.meaning || "無提示"}`));
+    const actions = document.createElement("div");
+    actions.className = "manage-actions";
+
     const edit = document.createElement("button");
     edit.className = "secondary-button mini";
     edit.type = "button";
     edit.textContent = "編輯";
     edit.addEventListener("click", () => startEdit(lesson.id));
-    row.append(info, edit);
+
+    const remove = document.createElement("button");
+    remove.className = "secondary-button mini danger";
+    remove.type = "button";
+    remove.textContent = "刪除";
+    remove.addEventListener("click", () => deleteLesson(lesson.id));
+
+    actions.append(edit, remove);
+    row.append(info, actions);
     els.customList.append(row);
   });
 }
@@ -232,6 +260,16 @@ function renderFormMode() {
   els.formTitle.textContent = editing ? "編輯字卡" : "新增字卡";
   els.saveLessonButton.textContent = editing ? "儲存修改" : "新增";
   els.cancelEditButton.classList.toggle("is-hidden", !editing);
+  updateFormLabels();
+}
+
+function updateFormLabels() {
+  const isWord = els.customCategory.value === "word";
+  els.customHintLabel.textContent = isWord ? "KK 音標" : "注音";
+  els.customHint.placeholder = isWord ? "例如 [ˋæpəl]" : "例如 ㄨㄛˇ";
+  els.customMeaningLabel.textContent = isWord ? "中文意思" : "意思";
+  els.customMeaning.placeholder = isWord ? "例如 蘋果" : "例如 I / me";
+  els.customSpeak.placeholder = isWord ? "留空使用英文單字" : "留空使用國字";
 }
 
 function renderCurrent(options = {}) {
@@ -251,6 +289,7 @@ function renderCurrent(options = {}) {
 
 function selectRelative(direction) {
   const items = lessonsFor();
+  if (!items.length) return;
   state.index = (state.index + direction + items.length) % items.length;
   renderCurrent({ autoSpeak: true });
 }
@@ -374,6 +413,27 @@ function startEdit(id) {
   els.customText.focus();
 }
 
+function deleteLesson(id) {
+  const lesson = state.lessons.find((item) => item.id === id);
+  if (!isEditableLesson(lesson)) return;
+  if (!window.confirm(`刪除「${lesson.display}」？`)) return;
+
+  const wasCurrent = currentItem().id === id;
+  state.lessons = state.lessons.filter((item) => item.id !== id);
+  saveLessons();
+  if (state.editingId === id) resetForm();
+
+  if (wasCurrent || !lessonsFor(state.category).length) {
+    const nextCategory = CATEGORY_ORDER.find((category) => lessonsFor(category).length);
+    state.category = nextCategory || null;
+    state.index = 0;
+  } else {
+    state.index = Math.min(state.index, lessonsFor(state.category).length - 1);
+  }
+
+  renderCurrent();
+}
+
 function resetForm() {
   state.editingId = null;
   els.lessonForm.reset();
@@ -416,6 +476,11 @@ els.autoPlayToggle.addEventListener("change", () => {
 });
 els.lessonForm.addEventListener("submit", saveLesson);
 els.cancelEditButton.addEventListener("click", resetForm);
+els.customCategory.addEventListener("change", updateFormLabels);
+els.searchInput.addEventListener("input", () => {
+  state.search = els.searchInput.value;
+  renderCategoryList();
+});
 window.addEventListener("resize", () => { resizeCanvas(); clearCanvas(); });
 window.addEventListener("online", updateOnlineStatus);
 window.addEventListener("offline", updateOnlineStatus);

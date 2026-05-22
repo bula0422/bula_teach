@@ -1,4 +1,4 @@
-const CACHE_NAME = "bula-teach-v4";
+const CACHE_NAME = "bula-teach-v5";
 const APP_ASSETS = [
   "./",
   "./index.html",

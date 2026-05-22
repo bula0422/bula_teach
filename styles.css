@@ -40,7 +40,7 @@ button { cursor: pointer; touch-action: manipulation; }
 
 .sidebar {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   gap: 14px;
   padding: 16px;
 }
@@ -62,6 +62,24 @@ h1, h2, p { margin: 0; }
 h1 { font-size: 20px; }
 .brand p, .eyebrow, .info-detail span, .modal-note, .switch-row small { color: var(--muted); }
 .brand p { margin-top: 3px; font-size: 13px; }
+
+.search-box {
+  display: grid;
+  gap: 6px;
+}
+.search-box label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+.search-box input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
 
 .category-list {
   display: grid;
@@ -115,6 +133,7 @@ h1 { font-size: 20px; }
 }
 .secondary-button { min-height: 42px; padding: 0 12px; font-weight: 800; }
 .secondary-button.mini { min-height: 34px; padding: 0 10px; font-size: 13px; }
+.secondary-button.danger { border-color: #c7928a; color: #9f3328; }
 .primary-button { min-height: 42px; padding: 0 16px; border-color: var(--accent); background: var(--accent); color: #fff; font-weight: 800; }
 
 .workspace {
@@ -234,6 +253,7 @@ h1 { font-size: 20px; }
 .modal-note { margin: 14px 0 8px; font-size: 13px; }
 .custom-list { display: grid; gap: 8px; margin-top: 8px; }
 .manage-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; padding: 9px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.manage-actions { display: flex; gap: 6px; }
 .manage-info { display: grid; gap: 2px; min-width: 0; }
 .manage-title { overflow: hidden; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
 .manage-meta { overflow: hidden; color: var(--muted); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
