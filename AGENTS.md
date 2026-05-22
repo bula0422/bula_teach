@@ -2,46 +2,49 @@
 
 ## Project Goal
 
-Bula Teach is a personal-use iPad PWA for tracing Chinese characters, bopomofo, and English words. It should work offline after the first HTTPS load and should not require accounts, a backend, or audio files.
+Bula Teach is a personal-use iPad PWA for tracing bopomofo, letters, Chinese characters, and English words. It should work offline after the first HTTPS load and should not require accounts or a backend.
 
 ## Architecture
 
-This project is intentionally static:
+This project is intentionally static and dependency-free:
 
-- `index.html` contains the app shell.
-- `styles.css` defines the iPad-friendly layout and tracing template style.
-- `app.js` contains default lesson data, custom lesson storage, drawing logic, progress storage, and TTS playback.
+- `index.html` contains the app shell, dialogs, and controls.
+- `styles.css` defines the iPad-friendly accordion layout, tracing area, and modal styling.
+- `app.js` contains lesson data, drawing logic, local storage, import/export, settings, and playback.
 - `sw.js` enables offline caching.
 - `manifest.webmanifest` enables installable PWA behavior.
-- `_headers` contains Cloudflare Pages response headers.
+- `_headers` contains Cloudflare response headers.
+- `assets/audio/bopomofo/` contains copied bopomofo WAV files.
+- `assets/THIRD_PARTY_NOTICES.md` contains third-party attribution.
 
 Do not add a framework or build step unless the app has grown enough to justify it.
 
-## Deployment Target
+## UI Model
 
-Deploy to Cloudflare Pages as a static site:
+The main screen should stay simple:
 
-- Framework preset: `None`
-- Build command: leave empty
-- Build output directory: `/`
-- Root directory: `/`
+- Left sidebar: four collapsible categories only: `注音`, `字母`, `國字`, `英文單字`.
+- Categories may all be collapsed; do not force one to stay open.
+- Search filters card rows by display text, hint, meaning, or speak text.
+- Right top: compact card information block with display text, hint/KK/zhuyin, meaning, and play button grouped closely together.
+- Main area: tracing canvas with floating previous/next arrows and floating template/clear controls.
+- Secondary operations belong in dialogs opened from sidebar buttons.
 
-Cloudflare Pages provides HTTPS, which is required for reliable Service Worker and PWA behavior on iPad Safari.
+## Lesson Categories
 
-## Offline Behavior
+Use `category`, not the old `type` field:
 
-The app should work offline after it has been opened once from the deployed HTTPS URL. The Service Worker uses a network-first strategy so online visits can pick up updates, then falls back to cache while offline.
+- `bopomofo`: fixed default lessons, not editable in the app.
+- `letter`: fixed default lessons, not editable in the app.
+- `hanzi`: editable lessons.
+- `word`: editable lessons.
 
-When changing core app files, keep `APP_ASSETS` in `sw.js` current. If offline update behavior becomes confusing, bump `CACHE_NAME`.
-
-## Lesson Data
-
-Lessons currently live in the `LESSONS` array in `app.js`. Keep entries small and explicit:
+Editable lesson example:
 
 ```js
 {
-  id: "zh_wo",
-  type: "chinese",
+  id: "hanzi_wo",
+  category: "hanzi",
   display: "我",
   hint: "ㄨㄛˇ",
   meaning: "I / me",
@@ -50,60 +53,81 @@ Lessons currently live in the `LESSONS` array in `app.js`. Keep entries small an
 }
 ```
 
-Supported `type` values:
+Only `hanzi` and `word` should appear in the management form and backup payload. Bopomofo and letters are fixed source data.
 
-- `chinese`
-- `bopomofo`
-- `english`
+## Local Storage
 
-Use `display` for the tracing template and `speakText` for TTS. For bopomofo, prefer TTS-friendly speak text such as `波`, `坡`, or `摸` instead of relying on the engine to pronounce isolated symbols correctly.
+Current keys:
+
+- `bula-teach-lessons-v2`: editable `hanzi` and `word` lessons only.
+- `bula-teach-settings-v1`: user settings such as `autoPlay` and `showTemplate`.
+- `bula-teach-backup-state-v1`: export/dirty status.
+
+When editing, adding, deleting, or importing lessons, preserve fixed bopomofo and letter lessons.
+
+## Import / Export
+
+Export filename is fixed as `bula-teach-lessons.json`. Browsers may still create numbered copies on repeated downloads; the app cannot force overwrite on iPad Safari.
+
+Export payload should contain:
+
+```js
+{
+  app: "bula-teach",
+  version: 1,
+  exportedAt: "...",
+  lessons: [/* hanzi and word only */]
+}
+```
+
+Import should accept either this object shape or a raw lesson array for compatibility. Import replaces editable lessons only and must keep fixed lessons intact.
 
 ## Drawing Approach
 
-The tracing template is generated with system fonts and a translucent text layer beneath the canvas. There are no SVG stroke files and no embedded fonts in the current version.
+The tracing template is generated with system fonts and a translucent text layer beneath the canvas. There are no per-character SVG stroke files in the active tracing UI.
 
-This is deliberate for the MVP:
+Current font choices:
 
-- No extra font licensing work.
-- No per-character SVG preparation.
-- Chinese, bopomofo, and English all use the same rendering path.
+- Chinese and bopomofo: system CJK fonts.
+- Letters and English words: Arial / Helvetica fallback.
 
-If exact cross-device glyph consistency becomes necessary, add a properly licensed font file and define it with `@font-face` in `styles.css`.
+Keep line-height generous enough that lowercase descenders such as `g`, `p`, and `y` are not clipped in the sidebar, header, or tracing template.
 
-## TTS
+## Playback
 
-Use the browser `speechSynthesis` API. Do not add audio files unless the user explicitly wants recorded pronunciation. On iPad, offline TTS quality depends on installed iOS voices.
+Bopomofo lessons use `audioUrl` and should prefer local WAV playback over TTS. Chinese and English use browser `speechSynthesis` unless an `audioUrl` is provided.
 
-## Coding Constraints
+Auto-play should trigger only when changing cards, not on the first page load.
 
-Keep the app dependency-free and easy to deploy. Prefer plain HTML, CSS, and JavaScript. Avoid adding Node tooling, package managers, or generated files unless there is a concrete need.
+## Bopomofo Audio Assets
 
-Before finishing a change, run:
+Default bopomofo lessons use Ministry of Education audio copied into `assets/audio/bopomofo/`. Keep the attribution in `assets/THIRD_PARTY_NOTICES.md` whenever these assets are shipped.
+
+If audio assets are added or renamed, update `APP_ASSETS` in `sw.js` and bump `CACHE_NAME` so installed PWAs refresh their cache.
+
+## Deployment
+
+The app can be deployed as a static Cloudflare Pages project or via Cloudflare Workers/Wrangler. HTTPS is required for reliable PWA Service Worker behavior on iPad Safari.
+
+When changing core app files or precached assets, bump `CACHE_NAME` in `sw.js`.
+
+## Verification
+
+Before finishing a code change, run:
 
 ```bash
 node --check app.js
 node --check sw.js
 ```
 
+For static serving checks, use the local server if it is running:
 
-## Custom Lessons
+```bash
+curl -I http://localhost:5173/
+```
 
-The app supports user-added lessons from the sidebar form. Custom lessons are stored in `localStorage` under `bula-teach-custom-lessons-v1` and are intentionally device-local. Do not add backend sync unless the user asks for multi-device use.
+## Coding Constraints
+
+Keep the app dependency-free and easy to deploy. Prefer plain HTML, CSS, and JavaScript. Avoid adding Node tooling, package managers, generated bundles, or framework files unless there is a concrete need.
 
 When rendering user-provided text, use DOM APIs and `textContent`; do not inject user input through `innerHTML`.
-
-
-## Settings
-
-User settings are stored in `localStorage` under `bula-teach-settings-v1`. Current settings are `autoPlay` and `showTemplate`. Keep settings device-local unless the user asks for sync.
-
-The template visibility control must update both the toolbar button and the settings checkbox. Auto-play should only trigger when changing cards, not on the first page load.
-
-English defaults include uppercase and lowercase A-Z generated in `app.js`. Keep English tracing in Arial unless the user asks for a different font.
-
-
-## Bopomofo Audio Assets
-
-Default bopomofo lessons use Ministry of Education audio copied into `assets/audio/bopomofo/`. Keep the attribution in `assets/THIRD_PARTY_NOTICES.md` whenever these assets are shipped.
-
-For bopomofo playback, prefer `audioUrl` over TTS. If new required audio assets are added, update `APP_ASSETS` in `sw.js` and bump `CACHE_NAME` so installed PWAs refresh their cache.
