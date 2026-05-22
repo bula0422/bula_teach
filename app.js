@@ -47,6 +47,8 @@ const CATEGORY_LABELS = {
 const CATEGORY_ORDER = ["bopomofo", "letter", "hanzi", "word"];
 const LESSONS_KEY = "bula-teach-lessons-v2";
 const SETTINGS_KEY = "bula-teach-settings-v1";
+const BACKUP_KEY = "bula-teach-backup-state-v1";
+const EXPORT_VERSION = 1;
 const DEFAULT_SETTINGS = { autoPlay: false, showTemplate: true };
 
 const state = {
@@ -56,7 +58,8 @@ const state = {
   drawing: false,
   editingId: null,
   search: "",
-  settings: loadSettings()
+  settings: loadSettings(),
+  backup: loadBackupState()
 };
 
 const els = {
@@ -90,6 +93,10 @@ const els = {
   customMeaningLabel: document.querySelector("#customMeaningLabel"),
   customSpeak: document.querySelector("#customSpeak"),
   customList: document.querySelector("#customList"),
+  backupStatus: document.querySelector("#backupStatus"),
+  exportButton: document.querySelector("#exportButton"),
+  importButton: document.querySelector("#importButton"),
+  importFileInput: document.querySelector("#importFileInput"),
   settingsButton: document.querySelector("#settingsButton"),
   settingsDialog: document.querySelector("#settingsDialog"),
   closeSettingsButton: document.querySelector("#closeSettingsButton"),
@@ -125,6 +132,14 @@ function loadSettings() {
   }
 }
 
+function loadBackupState() {
+  try {
+    return JSON.parse(localStorage.getItem(BACKUP_KEY) || "{}") || {};
+  } catch {
+    return {};
+  }
+}
+
 function isValidLesson(item) {
   return item && CATEGORY_LABELS[item.category] && typeof item.display === "string" && item.display.trim();
 }
@@ -133,8 +148,21 @@ function isEditableLesson(item) {
   return isValidLesson(item) && (item.category === "hanzi" || item.category === "word");
 }
 
-function saveLessons() {
+function saveLessons(options = {}) {
   localStorage.setItem(LESSONS_KEY, JSON.stringify(state.lessons.filter(isEditableLesson)));
+  if (options.markDirty !== false) markBackupDirty();
+}
+
+function markBackupDirty() {
+  state.backup.dirty = true;
+  localStorage.setItem(BACKUP_KEY, JSON.stringify(state.backup));
+  renderBackupStatus();
+}
+
+function markBackupClean() {
+  state.backup = { dirty: false, exportedAt: new Date().toISOString() };
+  localStorage.setItem(BACKUP_KEY, JSON.stringify(state.backup));
+  renderBackupStatus();
 }
 
 function saveSettings() {
@@ -255,6 +283,19 @@ function renderSettings() {
   els.templateButton.classList.toggle("is-active", state.settings.showTemplate);
 }
 
+function renderBackupStatus() {
+  if (!els.backupStatus) return;
+  if (state.backup.dirty) {
+    els.backupStatus.textContent = "有未匯出的教材變更";
+    return;
+  }
+  if (state.backup.exportedAt) {
+    els.backupStatus.textContent = `已匯出：${new Date(state.backup.exportedAt).toLocaleString()}`;
+    return;
+  }
+  els.backupStatus.textContent = "本機教材尚未匯出";
+}
+
 function renderFormMode() {
   const editing = Boolean(state.editingId);
   els.formTitle.textContent = editing ? "編輯字卡" : "新增字卡";
@@ -281,6 +322,7 @@ function renderCurrent(options = {}) {
   els.traceText.textContent = item.display;
   els.traceText.className = `trace-text ${item.category}`;
   renderSettings();
+  renderBackupStatus();
   renderCategoryList();
   renderCustomList();
   clearCanvas();
@@ -413,6 +455,52 @@ function startEdit(id) {
   els.customText.focus();
 }
 
+function exportLessons() {
+  const payload = {
+    app: "bula-teach",
+    version: EXPORT_VERSION,
+    exportedAt: new Date().toISOString(),
+    lessons: state.lessons.filter(isEditableLesson)
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "bula-teach-lessons.json";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  markBackupClean();
+}
+
+function importLessonsFromFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(String(reader.result || "{}"));
+      const source = Array.isArray(parsed) ? parsed : parsed.lessons;
+      if (!Array.isArray(source)) throw new Error("Invalid lessons payload");
+      const imported = source.map(normalizeLegacyLesson).filter(isEditableLesson);
+      const fixed = state.lessons.filter((item) => !isEditableLesson(item));
+      state.lessons = [...fixed, ...imported];
+      saveLessons({ markDirty: false });
+      markBackupClean();
+      state.category = imported[0]?.category || "hanzi";
+      state.index = 0;
+      resetForm();
+      renderCurrent();
+      window.alert(`已匯入 ${imported.length} 張可編輯字卡。`);
+    } catch {
+      window.alert("匯入失敗，請確認檔案是 Bula Teach 教材 JSON。");
+    } finally {
+      els.importFileInput.value = "";
+    }
+  };
+  reader.readAsText(file);
+}
+
 function deleteLesson(id) {
   const lesson = state.lessons.find((item) => item.id === id);
   if (!isEditableLesson(lesson)) return;
@@ -476,6 +564,9 @@ els.autoPlayToggle.addEventListener("change", () => {
 });
 els.lessonForm.addEventListener("submit", saveLesson);
 els.cancelEditButton.addEventListener("click", resetForm);
+els.exportButton.addEventListener("click", exportLessons);
+els.importButton.addEventListener("click", () => els.importFileInput.click());
+els.importFileInput.addEventListener("change", () => importLessonsFromFile(els.importFileInput.files?.[0]));
 els.customCategory.addEventListener("change", updateFormLabels);
 els.searchInput.addEventListener("input", () => {
   state.search = els.searchInput.value;

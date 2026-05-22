@@ -101,6 +101,17 @@
           <button class="secondary-button is-hidden" id="cancelEditButton" type="button">取消編輯</button>
         </div>
       </form>
+      <section class="backup-panel" aria-label="教材備份">
+        <div>
+          <strong>教材備份</strong>
+          <p id="backupStatus">本機教材尚未匯出</p>
+        </div>
+        <div class="backup-actions">
+          <button class="secondary-button" id="exportButton" type="button">匯出</button>
+          <button class="secondary-button" id="importButton" type="button">匯入</button>
+          <input class="is-hidden" id="importFileInput" type="file" accept="application/json,.json" />
+        </div>
+      </section>
       <p class="modal-note">注音與字母為固定教材；這裡只管理國字與英文單字。</p>
       <div class="custom-list" id="customList" aria-label="可編輯字卡"></div>
     </dialog>

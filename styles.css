@@ -250,6 +250,19 @@ h1 { font-size: 20px; }
 .lesson-form span { color: var(--muted); font-size: 13px; font-weight: 800; }
 .lesson-form input, .lesson-form select { min-height: 42px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
 .form-actions { display: flex; gap: 8px; }
+.backup-panel {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+.backup-panel p { margin-top: 3px; color: var(--muted); font-size: 13px; }
+.backup-actions { display: flex; gap: 8px; }
 .modal-note { margin: 14px 0 8px; font-size: 13px; }
 .custom-list { display: grid; gap: 8px; margin-top: 8px; }
 .manage-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; padding: 9px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
@@ -271,7 +284,8 @@ h1 { font-size: 20px; }
 }
 
 @media (max-width: 560px) {
-  .field-grid, .form-actions { grid-template-columns: 1fr; flex-direction: column; }
+  .field-grid, .form-actions, .backup-panel { grid-template-columns: 1fr; flex-direction: column; }
+  .backup-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .float-nav { width: 44px; height: 60px; font-size: 34px; }
   .float-nav.left { left: 8px; }
   .float-nav.right { right: 8px; }
