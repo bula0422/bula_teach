@@ -240,7 +240,7 @@ h1 { font-size: 20px; }
 .float-nav.left { left: 14px; }
 .float-nav.right { right: 14px; }
 .float-tools { position: absolute; top: 14px; right: 14px; z-index: 4; display: flex; gap: 8px; }
-.float-tool { display: grid; place-items: center; width: 52px; height: 48px; background: rgba(255, 253, 250, 0.92); color: var(--accent); font-size: 18px; font-weight: 900; }
+.float-tool { display: grid; place-items: center; width: 48px; height: 48px; background: rgba(255, 253, 250, 0.92); color: var(--accent); font-size: 19px; font-weight: 900; }
 .float-tool.is-active { border-color: var(--accent); background: rgba(21, 115, 106, 0.13); }
 
 .modal {

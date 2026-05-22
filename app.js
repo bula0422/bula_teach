@@ -598,7 +598,8 @@ function renderSettings() {
   els.traceStage.classList.toggle("template-hidden", !state.settings.showTemplate);
   els.traceStage.dataset.grid = String(state.settings.gridSize);
   els.templateButton.classList.toggle("is-active", state.settings.showTemplate);
-  els.gridButton.textContent = `${state.settings.gridSize}×${state.settings.gridSize}`;
+  els.gridButton.textContent = "田";
+  els.gridButton.title = `切換格線密度：目前 ${state.settings.gridSize}×${state.settings.gridSize}`;
 }
 
 function renderBackupStatus() {
