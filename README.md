@@ -58,7 +58,7 @@ npx wrangler deploy
 
 ## 預設教材
 
-內建教材包含固定的 37 個注音、A-Z/a-z 字母，以及一組小學基礎入門國字與英文單字 starter set。這份 starter set 是為個人練習建立的常見基礎清單，不宣稱是完整官方年級字表。
+內建教材包含固定的 37 個注音、A-Z/a-z 字母，以及一組擴充的小學基礎入門國字與英文單字 starter set。這份 starter set 是為個人練習建立的常見基礎清單，不宣稱是完整官方年級字表。英文 starter set 包含 Patrick、school 等常用或指定單字。
 
 ## 資料分類
 

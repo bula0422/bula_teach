@@ -56,7 +56,7 @@ Editable lesson example:
 
 Only `hanzi` and `word` should appear in the management form and backup payload. Bopomofo and letters are fixed source data. Hanzi cards may include `pinyin`, displayed next to zhuyin in the card info area.
 
-The built-in hanzi and word lessons are a practical elementary starter set, not an official complete curriculum list. Keep this wording unless a verified official source is added.
+The built-in hanzi and word lessons are an expanded practical elementary starter set, not an official complete curriculum list. Keep this wording unless a verified official source is added.
 
 ## Local Storage
 
