@@ -56,6 +56,10 @@ npx wrangler deploy
 
 部署完成後，用 iPad Safari 開 HTTPS 網址，選「加入主畫面」。第一次開啟需要網路，之後已快取的 app 可離線使用。
 
+## 預設教材
+
+內建教材包含固定的 37 個注音、A-Z/a-z 字母，以及一組小學基礎入門國字與英文單字 starter set。這份 starter set 是為個人練習建立的常見基礎清單，不宣稱是完整官方年級字表。
+
 ## 資料分類
 
 `app.js` 使用 `category` 區分教材：
@@ -123,6 +127,7 @@ bula-teach-backup-state-v1
 
 - 匯出：下載 `bula-teach-lessons.json`
 - 匯入：從 JSON 檔載入國字與英文單字
+- 載入預設：用內建的小學基礎國字與英文單字 starter set 取代目前可編輯教材
 
 匯出內容只包含可編輯的 `hanzi` 與 `word`，不包含固定的注音與字母。
 
