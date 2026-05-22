@@ -51,7 +51,7 @@ const DEFAULT_SETTINGS = { autoPlay: false, showTemplate: true };
 
 const state = {
   lessons: loadLessons(),
-  category: "bopomofo",
+  category: null,
   index: 0,
   drawing: false,
   editingId: null,
@@ -137,12 +137,17 @@ function saveSettings() {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
 }
 
-function lessonsFor(category = state.category) {
+function activeCategory() {
+  return state.category || currentItem().category;
+}
+
+function lessonsFor(category = activeCategory()) {
   return state.lessons.filter((item) => item.category === category);
 }
 
 function currentItem() {
-  const items = lessonsFor();
+  const category = state.category || state.lessons[0]?.category;
+  const items = state.lessons.filter((item) => item.category === category);
   return items[Math.min(state.index, items.length - 1)] || state.lessons[0];
 }
 
@@ -164,6 +169,11 @@ function renderCategoryList() {
     header.type = "button";
     header.textContent = `${CATEGORY_LABELS[category]} (${lessonsFor(category).length})`;
     header.addEventListener("click", () => {
+      if (state.category === category) {
+        state.category = null;
+        renderCurrent();
+        return;
+      }
       state.category = category;
       state.index = 0;
       renderCurrent({ autoSpeak: true });
@@ -226,7 +236,6 @@ function renderFormMode() {
 
 function renderCurrent(options = {}) {
   const item = currentItem();
-  state.category = item.category;
   els.itemType.textContent = CATEGORY_LABELS[item.category];
   els.itemTitle.textContent = item.display;
   els.hintText.textContent = item.hint || item.display;
