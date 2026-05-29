@@ -14,7 +14,19 @@
 /manifest.webmanifest
   Cache-Control: no-cache
 
-/app.js
+/home.js
+  Cache-Control: no-cache
+
+/copybook
+  Cache-Control: no-cache
+
+/copybook/*
+  Cache-Control: no-cache
+
+/math
+  Cache-Control: no-cache
+
+/math/*
   Cache-Control: no-cache
 
 /styles.css

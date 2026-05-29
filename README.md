@@ -1,10 +1,11 @@
 # Bula Teach
 
-離線描紅與發音練習 PWA。這個版本是純靜態網站，不需要後端、不需要帳號，也不需要 build step。
+離線描紅、發音與算術練習 PWA。這個版本是純靜態網站，不需要後端、不需要帳號，也不需要 build step。
 
 ## 功能
 
-- iPad 觸控 / Apple Pencil 描紅練習
+- `/` 主選單：進入描寫練習或算術練習
+- `/copybook/` iPad 觸控 / Apple Pencil 描紅練習
 - 左側四種可收合字卡分類：注音、字母、國字、英文單字
 - 注音使用教育部 37 個注音發音 WAV 音檔
 - 字母與英文單字使用 Arial 描紅
@@ -22,13 +23,19 @@
 python3 -m http.server 5173
 ```
 
-開啟描紅 app：
+開啟主選單：
 
 ```text
 http://localhost:5173/
 ```
 
-開啟算術練習：
+直接開啟描寫練習：
+
+```text
+http://localhost:5173/copybook/
+```
+
+直接開啟算術練習：
 
 ```text
 http://localhost:5173/math/
@@ -42,9 +49,18 @@ http://你的電腦區網IP:5173/
 
 區網 HTTP 可測功能，但正式 PWA 離線安裝請使用 HTTPS 部署網址。
 
+## 頁面架構
+
+`/` 只保留主選單，提供兩個大入口：
+
+- `/copybook/` 描寫練習
+- `/math/` 算術練習
+
+兩個練習頁左上都有返回鍵回到主選單。
+
 ## 算術練習頁
 
-`/math/` 是同一個靜態部署下的第二個頁面：
+`/math/` 是同一個靜態部署下的算術頁面：
 
 ```text
 https://your-domain.example/math/
@@ -59,7 +75,7 @@ https://your-domain.example/math/
 - 累計作答、正確、錯誤統計
 - 左側設定可清除統計
 
-`sw.js` 已將 `/math/` 的 HTML/CSS/JS 加入預快取，所以部署後第一次連網載入完成，後續可離線開啟。
+`sw.js` 已將 `/copybook/` 與 `/math/` 的 HTML/CSS/JS 加入預快取，所以部署後第一次連網載入完成，後續可離線開啟。
 
 ## 部署
 
@@ -88,7 +104,7 @@ npx wrangler deploy
 
 ## 資料分類
 
-`app.js` 使用 `category` 區分教材：
+`copybook/copybook.js` 使用 `category` 區分教材：
 
 ```text
 bopomofo  注音，固定教材，不可在 app 內編輯
@@ -177,14 +193,16 @@ iPad 上下載位置取決於：
 
 ## 字型
 
-目前沒有內嵌字型檔，中文與注音使用系統字型，字母與英文單字使用 Arial / Helvetica fallback。若之後需要每台裝置完全一致，可加入有授權的字型檔並於 `styles.css` 使用 `@font-face`。
+目前沒有內嵌字型檔，中文與注音使用系統字型，字母與英文單字使用 Arial / Helvetica fallback。若之後需要每台裝置完全一致，可加入有授權的字型檔並於 `copybook/copybook.css` 使用 `@font-face`。
 
 ## 更新流程
 
 修改後建議先檢查：
 
 ```bash
-node --check app.js
+node --check home.js
+node --check copybook/copybook.js
+node --check math/math.js
 node --check sw.js
 ```
 

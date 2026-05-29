@@ -12,3 +12,14 @@
 ・此素材依「創用CC 姓名標示 4.0 國際版本」授權條款進行公眾釋出，使用者於遵守本條款各項規定之前提下，得利用之。
 ・創用CC 姓名標示 4.0 國際版授權條款：https://creativecommons.org/licenses/by/4.0/deed.zh_TW
 
+## Hanzi Writer Data / Make Me A Hanzi
+
+The copybook page includes the Hanzi Writer JavaScript library, distributed under the MIT License, and can download and locally cache stroke-order JSON from `hanzi-writer-data` for the selected Hanzi character. Hanzi Writer data is derived from Make Me A Hanzi data and is distributed under the Arphic Public License.
+
+Sources:
+
+- Hanzi Writer: https://github.com/chanind/hanzi-writer
+- Hanzi Writer license: https://github.com/chanind/hanzi-writer/blob/master/LICENSE
+- Hanzi Writer Data: https://github.com/chanind/hanzi-writer-data
+- Make Me A Hanzi: https://github.com/skishore/makemeahanzi
+- Arphic Public License text: https://github.com/chanind/hanzi-writer-data/blob/master/ARPHICPL.TXT

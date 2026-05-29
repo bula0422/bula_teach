@@ -45,6 +45,27 @@ button { cursor: pointer; touch-action: manipulation; }
 h1, p { margin: 0; }
 h1 { font-size: 24px; }
 .brand p { margin-top: 4px; color: var(--muted); }
+.brand.with-back {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.back-link {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--accent);
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+}
+
 
 .mode-body label {
   display: grid;

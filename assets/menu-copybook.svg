@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280" role="img" aria-label="描寫練習">
+  <defs>
+    <linearGradient id="paper" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset="1" stop-color="#fff1d7"/>
+    </linearGradient>
+    <linearGradient id="trace" x1="120" x2="294" y1="76" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f4b043"/>
+      <stop offset=".52" stop-color="#15736a"/>
+      <stop offset="1" stop-color="#2f7bc4"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#302618" flood-opacity=".16"/>
+    </filter>
+    <clipPath id="bopomofoClip">
+      <text x="210" y="220" text-anchor="middle" font-family="PingFang TC, BiauKai, DFKai-SB, serif" font-size="188" font-weight="900">ㄅ</text>
+    </clipPath>
+  </defs>
+
+  <rect width="420" height="280" rx="22" fill="url(#paper)"/>
+  <rect x="44" y="32" width="332" height="216" rx="18" fill="#fffaf0" stroke="#eadcc6" stroke-width="2" filter="url(#softShadow)"/>
+  <path d="M72 62h276M72 218h276M90 46v188M330 46v188" stroke="#15736a" stroke-width="3" stroke-dasharray="13 11" opacity=".18"/>
+  <path d="M72 140h276M210 46v188" stroke="#15736a" stroke-width="2" opacity=".14"/>
+
+  <text x="210" y="220" text-anchor="middle" font-family="PingFang TC, BiauKai, DFKai-SB, serif" font-size="188" font-weight="900" fill="#20302d" opacity=".18">ㄅ</text>
+
+  <g clip-path="url(#bopomofoClip)">
+    <path d="M126 86 C160 73 213 67 294 77" fill="none" stroke="#f5bd55" stroke-width="34" stroke-linecap="round" opacity=".92"/>
+    <path d="M132 85 C166 75 216 70 289 78" fill="none" stroke="url(#trace)" stroke-width="20" stroke-linecap="round"/>
+    <path d="M140 80 C176 73 222 71 282 78" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".38"/>
+  </g>
+
+  <g transform="translate(288 78) rotate(82)" filter="url(#softShadow)">
+    <rect x="-9" y="-75" width="18" height="105" rx="9" fill="#263331"/>
+    <rect x="-9" y="-75" width="18" height="28" rx="9" fill="#f4c15d"/>
+    <rect x="-9" y="6" width="18" height="24" rx="7" fill="#15736a"/>
+    <path d="M-8 30h16L0 51z" fill="#bd8a4d"/>
+    <path d="M-3 45h6L0 55z" fill="#20302d"/>
+  </g>
+
+  <circle cx="91" cy="213" r="13" fill="#3478c6" opacity=".15"/>
+  <circle cx="330" cy="57" r="16" fill="#d94f7d" opacity=".13"/>
+</svg>

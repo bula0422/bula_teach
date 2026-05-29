@@ -12,131 +12,34 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <aside class="sidebar" aria-label="字卡分類">
-        <div class="brand">
-          <span class="brand-mark">字</span>
+    <main class="home-screen" id="homeScreen">
+      <section class="home-hero">
+        <div class="brand home-brand">
+          <img class="home-icon" src="./app-icon.png" alt="" />
           <div>
             <h1>Bula Teach</h1>
             <p id="offlineStatus">準備中</p>
           </div>
         </div>
-
-        <div class="search-box">
-          <label for="searchInput">搜尋字卡</label>
-          <input id="searchInput" type="search" placeholder="搜尋文字、提示或意思" />
-        </div>
-
-        <nav class="category-list" id="categoryList" aria-label="字卡列表"></nav>
-
-        <div class="sidebar-actions">
-          <button class="secondary-button" id="manageButton" type="button">教材管理</button>
-          <button class="secondary-button" id="settingsButton" type="button">設定</button>
-        </div>
-      </aside>
-
-      <section class="workspace" aria-label="描寫練習">
-        <header class="card-info">
-          <div class="info-card">
-            <div class="info-main">
-              <p class="eyebrow" id="itemType">注音</p>
-              <h2 id="itemTitle">ㄅ</h2>
-            </div>
-            <div class="info-detail">
-              <strong id="hintText">ㄅ</strong>
-              <span id="meaningText">教育部注音發音</span>
-            </div>
-            <button class="play-button" id="speakButton" type="button" aria-label="播放發音">▶</button>
-          </div>
-        </header>
-
-        <div class="trace-stage" id="traceStage">
-          <div class="guide-lines" aria-hidden="true"></div>
-          <div class="trace-text" id="traceText" aria-hidden="true">ㄅ</div>
-          <canvas id="traceCanvas" aria-label="描寫區"></canvas>
-          <button class="float-nav left" id="prevButton" type="button" aria-label="上一張">‹</button>
-          <button class="float-nav right" id="nextButton" type="button" aria-label="下一張">›</button>
-          <div class="float-tools" aria-label="描寫工具">
-            <button class="float-tool" id="templateButton" type="button" aria-label="顯示或隱藏底稿" title="顯示或隱藏底稿">字</button>
-            <button class="float-tool" id="gridButton" type="button" aria-label="切換格線密度" title="切換格線密度">田</button>
-            <button class="float-tool" id="clearButton" type="button" aria-label="清除筆跡" title="清除筆跡">↺</button>
-          </div>
+        <div class="launcher-grid" aria-label="功能選單">
+          <a class="launcher-card" href="./copybook/">
+            <span class="launcher-visual image-visual"><img src="./assets/menu-copybook.svg" alt="" /></span>
+            <span class="launcher-copy">
+              <strong>描寫練習</strong>
+              <small>注音、字母、國字、英文單字</small>
+            </span>
+          </a>
+          <a class="launcher-card" href="./math/">
+            <span class="launcher-visual image-visual"><img src="./assets/menu-math.svg" alt="" /></span>
+            <span class="launcher-copy">
+              <strong>算術練習</strong>
+              <small>加減乘除與手寫計算</small>
+            </span>
+          </a>
         </div>
       </section>
     </main>
 
-    <dialog class="modal" id="manageDialog">
-      <div class="modal-head">
-        <h2 id="formTitle">新增字卡</h2>
-        <button class="icon-close" id="closeManageButton" type="button" aria-label="關閉">×</button>
-      </div>
-      <form class="lesson-form" id="lessonForm" autocomplete="off">
-        <label class="field-row" for="customText">
-          <span>描紅文字</span>
-          <input id="customText" name="customText" type="text" maxlength="18" placeholder="字、注音或英文" required />
-        </label>
-        <div class="field-grid">
-          <label for="customCategory">
-            <span>分類</span>
-            <select id="customCategory" name="customCategory">
-              <option value="hanzi">國字</option>
-              <option value="word">英文單字</option>
-            </select>
-          </label>
-          <label for="customHint">
-            <span id="customHintLabel">注音</span>
-            <input id="customHint" name="customHint" type="text" maxlength="40" placeholder="例如 ㄨㄛˇ" />
-          </label>
-        </div>
-        <div class="field-grid">
-          <label class="hanzi-extra-field" for="customPinyin">
-            <span>羅馬拼音</span>
-            <input id="customPinyin" name="customPinyin" type="text" maxlength="40" placeholder="例如 wǒ" />
-          </label>
-          <label for="customMeaning">
-            <span id="customMeaningLabel">意思</span>
-            <input id="customMeaning" name="customMeaning" type="text" maxlength="40" placeholder="意思" />
-          </label>
-          <label for="customSpeak">
-            <span>發音文字</span>
-            <input id="customSpeak" name="customSpeak" type="text" maxlength="40" placeholder="留空使用描紅文字" />
-          </label>
-        </div>
-        <div class="form-actions">
-          <button class="primary-button" id="saveLessonButton" type="submit">新增</button>
-          <button class="secondary-button is-hidden" id="cancelEditButton" type="button">取消編輯</button>
-        </div>
-      </form>
-      <section class="backup-panel" aria-label="教材備份">
-        <div>
-          <strong>教材備份</strong>
-          <p id="backupStatus">本機教材尚未匯出</p>
-        </div>
-        <div class="backup-actions">
-          <button class="secondary-button" id="exportButton" type="button">匯出</button>
-          <button class="secondary-button" id="importButton" type="button">匯入</button>
-          <button class="secondary-button" id="resetDefaultsButton" type="button">載入預設</button>
-          <input class="is-hidden" id="importFileInput" type="file" accept="application/json,.json" />
-        </div>
-      </section>
-      <p class="modal-note">注音與字母為固定教材；這裡只管理國字與英文單字。</p>
-      <div class="custom-list" id="customList" aria-label="可編輯字卡"></div>
-    </dialog>
-
-    <dialog class="modal small" id="settingsDialog">
-      <div class="modal-head">
-        <h2>設定</h2>
-        <button class="icon-close" id="closeSettingsButton" type="button" aria-label="關閉">×</button>
-      </div>
-      <label class="switch-row">
-        <span>
-          <strong>切換字卡自動播放</strong>
-          <small>點選字卡或按左右箭頭時自動念一次</small>
-        </span>
-        <input id="autoPlayToggle" type="checkbox" />
-      </label>
-    </dialog>
-
-    <script src="./app.js" type="module"></script>
+    <script src="./home.js"></script>
   </body>
 </html>

@@ -17,7 +17,7 @@ const BOPOMOFO_BASE = [
   meaning: "教育部注音發音",
   speakText: symbol,
   lang: "zh-TW",
-  audioUrl: `./assets/audio/bopomofo/${file}`
+  audioUrl: `../assets/audio/bopomofo/${file}`
 }));
 
 const LETTER_BASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").flatMap((letter) => [
@@ -181,6 +181,56 @@ const BASE_LESSONS = [
   { id: "hanzi_guan", category: "hanzi", display: "關", hint: "ㄍㄨㄢ", pinyin: "guān", meaning: "close", speakText: "關", lang: "zh-TW" },
   { id: "hanzi_xin_new", category: "hanzi", display: "新", hint: "ㄒㄧㄣ", pinyin: "xīn", meaning: "new", speakText: "新", lang: "zh-TW" },
   { id: "hanzi_jiu_old", category: "hanzi", display: "舊", hint: "ㄐㄧㄡˋ", pinyin: "jiù", meaning: "old", speakText: "舊", lang: "zh-TW" },
+  { id: "hanzi_fen", category: "hanzi", display: "分", hint: "ㄈㄣ", pinyin: "fēn", meaning: "divide / minute", speakText: "分", lang: "zh-TW" },
+  { id: "hanzi_wu_noon", category: "hanzi", display: "午", hint: "ㄨˇ", pinyin: "wǔ", meaning: "noon", speakText: "午", lang: "zh-TW" },
+  { id: "hanzi_shi_time", category: "hanzi", display: "時", hint: "ㄕˊ", pinyin: "shí", meaning: "time / hour", speakText: "時", lang: "zh-TW" },
+  { id: "hanzi_guo_country", category: "hanzi", display: "國", hint: "ㄍㄨㄛˊ", pinyin: "guó", meaning: "country", speakText: "國", lang: "zh-TW" },
+  { id: "hanzi_yu_language", category: "hanzi", display: "語", hint: "ㄩˇ", pinyin: "yǔ", meaning: "language", speakText: "語", lang: "zh-TW" },
+  { id: "hanzi_ying", category: "hanzi", display: "英", hint: "ㄧㄥ", pinyin: "yīng", meaning: "English / brave", speakText: "英", lang: "zh-TW" },
+  { id: "hanzi_wen_text", category: "hanzi", display: "文", hint: "ㄨㄣˊ", pinyin: "wén", meaning: "writing / text", speakText: "文", lang: "zh-TW" },
+  { id: "hanzi_shu_math", category: "hanzi", display: "數", hint: "ㄕㄨˋ", pinyin: "shù", meaning: "number / math", speakText: "數", lang: "zh-TW" },
+  { id: "hanzi_suan", category: "hanzi", display: "算", hint: "ㄙㄨㄢˋ", pinyin: "suàn", meaning: "calculate", speakText: "算", lang: "zh-TW" },
+  { id: "hanzi_ti_question", category: "hanzi", display: "題", hint: "ㄊㄧˊ", pinyin: "tí", meaning: "question / topic", speakText: "題", lang: "zh-TW" },
+  { id: "hanzi_da_answer", category: "hanzi", display: "答", hint: "ㄉㄚˊ", pinyin: "dá", meaning: "answer", speakText: "答", lang: "zh-TW" },
+  { id: "hanzi_zuo_do", category: "hanzi", display: "作", hint: "ㄗㄨㄛˋ", pinyin: "zuò", meaning: "do / make", speakText: "作", lang: "zh-TW" },
+  { id: "hanzi_ye_work", category: "hanzi", display: "業", hint: "ㄧㄝˋ", pinyin: "yè", meaning: "work / homework part", speakText: "業", lang: "zh-TW" },
+  { id: "hanzi_yuan_garden", category: "hanzi", display: "園", hint: "ㄩㄢˊ", pinyin: "yuán", meaning: "garden / park", speakText: "園", lang: "zh-TW" },
+  { id: "hanzi_tong_child", category: "hanzi", display: "童", hint: "ㄊㄨㄥˊ", pinyin: "tóng", meaning: "child", speakText: "童", lang: "zh-TW" },
+  { id: "hanzi_wu_thing", category: "hanzi", display: "物", hint: "ㄨˋ", pinyin: "wù", meaning: "thing / object", speakText: "物", lang: "zh-TW" },
+  { id: "hanzi_dian_electric", category: "hanzi", display: "電", hint: "ㄉㄧㄢˋ", pinyin: "diàn", meaning: "electricity", speakText: "電", lang: "zh-TW" },
+  { id: "hanzi_nao", category: "hanzi", display: "腦", hint: "ㄋㄠˇ", pinyin: "nǎo", meaning: "brain", speakText: "腦", lang: "zh-TW" },
+  { id: "hanzi_hua_phone", category: "hanzi", display: "話", hint: "ㄏㄨㄚˋ", pinyin: "huà", meaning: "speech / phone part", speakText: "話", lang: "zh-TW" },
+  { id: "hanzi_ji_machine", category: "hanzi", display: "機", hint: "ㄐㄧ", pinyin: "jī", meaning: "machine", speakText: "機", lang: "zh-TW" },
+  { id: "hanzi_lu_road", category: "hanzi", display: "路", hint: "ㄌㄨˋ", pinyin: "lù", meaning: "road", speakText: "路", lang: "zh-TW" },
+  { id: "hanzi_jie_street", category: "hanzi", display: "街", hint: "ㄐㄧㄝ", pinyin: "jiē", meaning: "street", speakText: "街", lang: "zh-TW" },
+  { id: "hanzi_shi_city", category: "hanzi", display: "市", hint: "ㄕˋ", pinyin: "shì", meaning: "city / market", speakText: "市", lang: "zh-TW" },
+  { id: "hanzi_dian_store", category: "hanzi", display: "店", hint: "ㄉㄧㄢˋ", pinyin: "diàn", meaning: "shop / store", speakText: "店", lang: "zh-TW" },
+  { id: "hanzi_qian_money", category: "hanzi", display: "錢", hint: "ㄑㄧㄢˊ", pinyin: "qián", meaning: "money", speakText: "錢", lang: "zh-TW" },
+  { id: "hanzi_yuan_money", category: "hanzi", display: "元", hint: "ㄩㄢˊ", pinyin: "yuán", meaning: "dollar / yuan", speakText: "元", lang: "zh-TW" },
+  { id: "hanzi_jiao", category: "hanzi", display: "角", hint: "ㄐㄧㄠˇ", pinyin: "jiǎo", meaning: "corner / dime", speakText: "角", lang: "zh-TW" },
+  { id: "hanzi_dian_point", category: "hanzi", display: "點", hint: "ㄉㄧㄢˇ", pinyin: "diǎn", meaning: "point / o'clock", speakText: "點", lang: "zh-TW" },
+  { id: "hanzi_sui_age", category: "hanzi", display: "歲", hint: "ㄙㄨㄟˋ", pinyin: "suì", meaning: "years old", speakText: "歲", lang: "zh-TW" },
+  { id: "hanzi_zhu_live", category: "hanzi", display: "住", hint: "ㄓㄨˋ", pinyin: "zhù", meaning: "live / stay", speakText: "住", lang: "zh-TW" },
+  { id: "hanzi_zuo_sit", category: "hanzi", display: "坐", hint: "ㄗㄨㄛˋ", pinyin: "zuò", meaning: "sit", speakText: "坐", lang: "zh-TW" },
+  { id: "hanzi_zhan", category: "hanzi", display: "站", hint: "ㄓㄢˋ", pinyin: "zhàn", meaning: "stand / station", speakText: "站", lang: "zh-TW" },
+  { id: "hanzi_zou", category: "hanzi", display: "走", hint: "ㄗㄡˇ", pinyin: "zǒu", meaning: "walk / go", speakText: "走", lang: "zh-TW" },
+  { id: "hanzi_pao", category: "hanzi", display: "跑", hint: "ㄆㄠˇ", pinyin: "pǎo", meaning: "run", speakText: "跑", lang: "zh-TW" },
+  { id: "hanzi_tiao", category: "hanzi", display: "跳", hint: "ㄊㄧㄠˋ", pinyin: "tiào", meaning: "jump", speakText: "跳", lang: "zh-TW" },
+  { id: "hanzi_xiao_laugh", category: "hanzi", display: "笑", hint: "ㄒㄧㄠˋ", pinyin: "xiào", meaning: "smile / laugh", speakText: "笑", lang: "zh-TW" },
+  { id: "hanzi_ku", category: "hanzi", display: "哭", hint: "ㄎㄨ", pinyin: "kū", meaning: "cry", speakText: "哭", lang: "zh-TW" },
+  { id: "hanzi_xi", category: "hanzi", display: "喜", hint: "ㄒㄧˇ", pinyin: "xǐ", meaning: "happy / like", speakText: "喜", lang: "zh-TW" },
+  { id: "hanzi_huan", category: "hanzi", display: "歡", hint: "ㄏㄨㄢ", pinyin: "huān", meaning: "joy / like part", speakText: "歡", lang: "zh-TW" },
+  { id: "hanzi_pa", category: "hanzi", display: "怕", hint: "ㄆㄚˋ", pinyin: "pà", meaning: "afraid", speakText: "怕", lang: "zh-TW" },
+  { id: "hanzi_qi_air", category: "hanzi", display: "氣", hint: "ㄑㄧˋ", pinyin: "qì", meaning: "air / mood", speakText: "氣", lang: "zh-TW" },
+  { id: "hanzi_leng", category: "hanzi", display: "冷", hint: "ㄌㄥˇ", pinyin: "lěng", meaning: "cold", speakText: "冷", lang: "zh-TW" },
+  { id: "hanzi_nuan", category: "hanzi", display: "暖", hint: "ㄋㄨㄢˇ", pinyin: "nuǎn", meaning: "warm", speakText: "暖", lang: "zh-TW" },
+  { id: "hanzi_liang_bright", category: "hanzi", display: "亮", hint: "ㄌㄧㄤˋ", pinyin: "liàng", meaning: "bright", speakText: "亮", lang: "zh-TW" },
+  { id: "hanzi_an_dark", category: "hanzi", display: "暗", hint: "ㄢˋ", pinyin: "àn", meaning: "dark", speakText: "暗", lang: "zh-TW" },
+  { id: "hanzi_xing_star", category: "hanzi", display: "星", hint: "ㄒㄧㄥ", pinyin: "xīng", meaning: "star", speakText: "星", lang: "zh-TW" },
+  { id: "hanzi_kong_sky", category: "hanzi", display: "空", hint: "ㄎㄨㄥ", pinyin: "kōng", meaning: "sky / empty", speakText: "空", lang: "zh-TW" },
+  { id: "hanzi_hai_sea", category: "hanzi", display: "海", hint: "ㄏㄞˇ", pinyin: "hǎi", meaning: "sea", speakText: "海", lang: "zh-TW" },
+  { id: "hanzi_he_river", category: "hanzi", display: "河", hint: "ㄏㄜˊ", pinyin: "hé", meaning: "river", speakText: "河", lang: "zh-TW" },
+  { id: "hanzi_lin_forest", category: "hanzi", display: "林", hint: "ㄌㄧㄣˊ", pinyin: "lín", meaning: "woods / forest", speakText: "林", lang: "zh-TW" },
   { id: "word_apple", category: "word", display: "apple", hint: "[ˋæpəl]", meaning: "蘋果", speakText: "apple", lang: "en-US" },
   { id: "word_book", category: "word", display: "book", hint: "[bʊk]", meaning: "書", speakText: "book", lang: "en-US" },
   { id: "word_cat", category: "word", display: "cat", hint: "[kæt]", meaning: "貓", speakText: "cat", lang: "en-US" },
@@ -331,7 +381,58 @@ const BASE_LESSONS = [
   { id: "word_candy", category: "word", display: "candy", hint: "[ˋkændɪ]", meaning: "糖果", speakText: "candy", lang: "en-US" },
   { id: "word_pizza", category: "word", display: "pizza", hint: "[ˋpitsə]", meaning: "披薩", speakText: "pizza", lang: "en-US" },
   { id: "word_noodle", category: "word", display: "noodle", hint: "[ˋnudəl]", meaning: "麵條", speakText: "noodle", lang: "en-US" },
-  { id: "word_soup", category: "word", display: "soup", hint: "[sup]", meaning: "湯", speakText: "soup", lang: "en-US" },];
+  { id: "word_soup", category: "word", display: "soup", hint: "[sup]", meaning: "湯", speakText: "soup", lang: "en-US" },
+  { id: "word_computer", category: "word", display: "computer", hint: "[kəmˋpjutɚ]", meaning: "電腦", speakText: "computer", lang: "en-US" },
+  { id: "word_phone", category: "word", display: "phone", hint: "[fon]", meaning: "電話", speakText: "phone", lang: "en-US" },
+  { id: "word_notebook", category: "word", display: "notebook", hint: "[ˋnotˌbʊk]", meaning: "筆記本", speakText: "notebook", lang: "en-US" },
+  { id: "word_homework", category: "word", display: "homework", hint: "[ˋhomˌwɝk]", meaning: "作業", speakText: "homework", lang: "en-US" },
+  { id: "word_question", category: "word", display: "question", hint: "[ˋkwɛstʃən]", meaning: "問題", speakText: "question", lang: "en-US" },
+  { id: "word_answer", category: "word", display: "answer", hint: "[ˋænsɚ]", meaning: "答案", speakText: "answer", lang: "en-US" },
+  { id: "word_story", category: "word", display: "story", hint: "[ˋstɔrɪ]", meaning: "故事", speakText: "story", lang: "en-US" },
+  { id: "word_music", category: "word", display: "music", hint: "[ˋmjuzɪk]", meaning: "音樂", speakText: "music", lang: "en-US" },
+  { id: "word_art", category: "word", display: "art", hint: "[ɑrt]", meaning: "美術", speakText: "art", lang: "en-US" },
+  { id: "word_math", category: "word", display: "math", hint: "[mæθ]", meaning: "數學", speakText: "math", lang: "en-US" },
+  { id: "word_chinese", category: "word", display: "Chinese", hint: "[tʃaɪˋniz]", meaning: "中文", speakText: "Chinese", lang: "en-US" },
+  { id: "word_english", category: "word", display: "English", hint: "[ˋɪŋglɪʃ]", meaning: "英文", speakText: "English", lang: "en-US" },
+  { id: "word_breakfast", category: "word", display: "breakfast", hint: "[ˋbrɛkfəst]", meaning: "早餐", speakText: "breakfast", lang: "en-US" },
+  { id: "word_lunch", category: "word", display: "lunch", hint: "[lʌntʃ]", meaning: "午餐", speakText: "lunch", lang: "en-US" },
+  { id: "word_dinner", category: "word", display: "dinner", hint: "[ˋdɪnɚ]", meaning: "晚餐", speakText: "dinner", lang: "en-US" },
+  { id: "word_snack", category: "word", display: "snack", hint: "[snæk]", meaning: "點心", speakText: "snack", lang: "en-US" },
+  { id: "word_fruit", category: "word", display: "fruit", hint: "[frut]", meaning: "水果", speakText: "fruit", lang: "en-US" },
+  { id: "word_vegetable", category: "word", display: "vegetable", hint: "[ˋvɛdʒtəbəl]", meaning: "蔬菜", speakText: "vegetable", lang: "en-US" },
+  { id: "word_meat", category: "word", display: "meat", hint: "[mit]", meaning: "肉", speakText: "meat", lang: "en-US" },
+  { id: "word_beef", category: "word", display: "beef", hint: "[bif]", meaning: "牛肉", speakText: "beef", lang: "en-US" },
+  { id: "word_pork", category: "word", display: "pork", hint: "[pɔrk]", meaning: "豬肉", speakText: "pork", lang: "en-US" },
+  { id: "word_bathroom", category: "word", display: "bathroom", hint: "[ˋbæθˌrum]", meaning: "浴室 / 廁所", speakText: "bathroom", lang: "en-US" },
+  { id: "word_kitchen", category: "word", display: "kitchen", hint: "[ˋkɪtʃən]", meaning: "廚房", speakText: "kitchen", lang: "en-US" },
+  { id: "word_garden", category: "word", display: "garden", hint: "[ˋgɑrdən]", meaning: "花園", speakText: "garden", lang: "en-US" },
+  { id: "word_street", category: "word", display: "street", hint: "[strit]", meaning: "街道", speakText: "street", lang: "en-US" },
+  { id: "word_road", category: "word", display: "road", hint: "[rod]", meaning: "道路", speakText: "road", lang: "en-US" },
+  { id: "word_money", category: "word", display: "money", hint: "[ˋmʌnɪ]", meaning: "錢", speakText: "money", lang: "en-US" },
+  { id: "word_dollar", category: "word", display: "dollar", hint: "[ˋdɑlɚ]", meaning: "元 / 美元", speakText: "dollar", lang: "en-US" },
+  { id: "word_number", category: "word", display: "number", hint: "[ˋnʌmbɚ]", meaning: "數字", speakText: "number", lang: "en-US" },
+  { id: "word_page", category: "word", display: "page", hint: "[pedʒ]", meaning: "頁", speakText: "page", lang: "en-US" },
+  { id: "word_picture", category: "word", display: "picture", hint: "[ˋpɪktʃɚ]", meaning: "圖片", speakText: "picture", lang: "en-US" },
+  { id: "word_color", category: "word", display: "color", hint: "[ˋkʌlɚ]", meaning: "顏色", speakText: "color", lang: "en-US" },
+  { id: "word_game", category: "word", display: "game", hint: "[gem]", meaning: "遊戲", speakText: "game", lang: "en-US" },
+  { id: "word_toy", category: "word", display: "toy", hint: "[tɔɪ]", meaning: "玩具", speakText: "toy", lang: "en-US" },
+  { id: "word_gift", category: "word", display: "gift", hint: "[gɪft]", meaning: "禮物", speakText: "gift", lang: "en-US" },
+  { id: "word_party", category: "word", display: "party", hint: "[ˋpɑrtɪ]", meaning: "派對", speakText: "party", lang: "en-US" },
+  { id: "word_birthday", category: "word", display: "birthday", hint: "[ˋbɝθˌde]", meaning: "生日", speakText: "birthday", lang: "en-US" },
+  { id: "word_weather", category: "word", display: "weather", hint: "[ˋwɛðɚ]", meaning: "天氣", speakText: "weather", lang: "en-US" },
+  { id: "word_cloud", category: "word", display: "cloud", hint: "[klaʊd]", meaning: "雲", speakText: "cloud", lang: "en-US" },
+  { id: "word_wind", category: "word", display: "wind", hint: "[wɪnd]", meaning: "風", speakText: "wind", lang: "en-US" },
+  { id: "word_snow", category: "word", display: "snow", hint: "[sno]", meaning: "雪", speakText: "snow", lang: "en-US" },
+  { id: "word_sea", category: "word", display: "sea", hint: "[si]", meaning: "海", speakText: "sea", lang: "en-US" },
+  { id: "word_river", category: "word", display: "river", hint: "[ˋrɪvɚ]", meaning: "河流", speakText: "river", lang: "en-US" },
+  { id: "word_lake", category: "word", display: "lake", hint: "[lek]", meaning: "湖", speakText: "lake", lang: "en-US" },
+  { id: "word_forest", category: "word", display: "forest", hint: "[ˋfɔrɪst]", meaning: "森林", speakText: "forest", lang: "en-US" },
+  { id: "word_mountain", category: "word", display: "mountain", hint: "[ˋmaʊntən]", meaning: "山", speakText: "mountain", lang: "en-US" },
+  { id: "word_world", category: "word", display: "world", hint: "[wɝld]", meaning: "世界", speakText: "world", lang: "en-US" },
+  { id: "word_country", category: "word", display: "country", hint: "[ˋkʌntrɪ]", meaning: "國家", speakText: "country", lang: "en-US" },
+  { id: "word_language", category: "word", display: "language", hint: "[ˋlæŋgwɪdʒ]", meaning: "語言", speakText: "language", lang: "en-US" },
+  { id: "word_lesson", category: "word", display: "lesson", hint: "[ˋlɛsən]", meaning: "課程", speakText: "lesson", lang: "en-US" },
+];
 
 const CATEGORY_LABELS = {
   bopomofo: "注音",
@@ -360,6 +461,9 @@ const BACKUP_KEY = "bula-teach-backup-state-v1";
 const EXPORT_VERSION = 1;
 const GRID_SIZES = [2, 4, 16];
 const DEFAULT_SETTINGS = { autoPlay: false, showTemplate: true, gridSize: 2 };
+const HANZI_DATA_CACHE = "bula-hanzi-writer-data-v1";
+const HANZI_DATA_VERSION = "2.0.1";
+const HANZI_DATA_CDN = `https://cdn.jsdelivr.net/npm/hanzi-writer-data@${HANZI_DATA_VERSION}`;
 
 const state = {
   lessons: loadLessons(),
@@ -376,7 +480,6 @@ const els = {
   offlineStatus: document.querySelector("#offlineStatus"),
   categoryList: document.querySelector("#categoryList"),
   searchInput: document.querySelector("#searchInput"),
-  itemType: document.querySelector("#itemType"),
   itemTitle: document.querySelector("#itemTitle"),
   hintText: document.querySelector("#hintText"),
   meaningText: document.querySelector("#meaningText"),
@@ -417,6 +520,9 @@ const els = {
   autoPlayToggle: document.querySelector("#autoPlayToggle")
 };
 const ctx = els.canvas.getContext("2d");
+let chineseVoiceWarningShown = false;
+let hanziWriter = null;
+let hanziStrokeRenderToken = 0;
 
 function normalizeLegacyLesson(item) {
   const category = item.category || (item.type === "bopomofo" ? "bopomofo" : item.type === "chinese" ? "hanzi" : "word");
@@ -615,9 +721,50 @@ function renderBackupStatus() {
   els.backupStatus.textContent = "本機教材尚未匯出";
 }
 
-function formatHint(item) {
-  if (item.category === "hanzi" && item.pinyin) return `${item.hint || item.display} · ${item.pinyin}`;
-  return item.hint || item.display;
+function makeInfoField(label, value, className = "") {
+  const field = document.createElement("div");
+  field.className = `info-field${className ? ` ${className}` : ""}`;
+  const labelEl = document.createElement("span");
+  labelEl.className = "info-label";
+  labelEl.textContent = label;
+  const valueEl = document.createElement("strong");
+  valueEl.className = "info-value";
+  valueEl.textContent = value || "-";
+  field.append(labelEl, valueEl);
+  return field;
+}
+
+function renderInfoDetail(item) {
+  els.hintText.replaceChildren();
+  els.meaningText.textContent = "";
+  els.meaningText.classList.add("is-hidden");
+
+  if (item.category === "bopomofo") {
+    els.hintText.className = "info-grid empty-info";
+    return;
+  }
+
+  if (item.category === "letter") {
+    els.hintText.className = "info-grid single-info";
+    els.hintText.append(makeInfoField("提示", item.hint || item.display));
+    return;
+  }
+
+  if (item.category === "hanzi") {
+    els.hintText.className = "info-grid hanzi-info";
+    els.hintText.append(
+      makeInfoField("注音", item.hint || item.display),
+      makeInfoField("羅馬拼音", item.pinyin || "-"),
+      makeInfoField("英文解釋", item.meaning || CATEGORY_LABELS[item.category], "wide")
+    );
+    return;
+  }
+
+  els.hintText.className = "info-grid compact-info";
+  els.hintText.append(
+    makeInfoField("KK", item.hint || item.display),
+    makeInfoField("中文意思", item.meaning || CATEGORY_LABELS[item.category], "wide")
+  );
 }
 
 function renderFormMode() {
@@ -638,12 +785,110 @@ function updateFormLabels() {
   els.customSpeak.placeholder = isWord ? "留空使用英文單字" : "留空使用國字";
 }
 
+function stopHanziStrokePlayback() {
+  hanziStrokeRenderToken += 1;
+  if (hanziWriter) hanziWriter.pauseAnimation()?.catch(() => {});
+  hanziWriter = null;
+}
+
+function singleHanziForStroke(item) {
+  const chars = Array.from(item.display || "");
+  if (item.category !== "hanzi" || chars.length !== 1) return null;
+  return /\p{Script=Han}/u.test(chars[0]) ? chars[0] : null;
+}
+
+function hanziCacheUrl(char) {
+  return `/hanzi-writer-data/${encodeURIComponent(char)}.json`;
+}
+
+function hanziCdnUrl(char) {
+  return `${HANZI_DATA_CDN}/${encodeURIComponent(char)}.json`;
+}
+
+async function readCachedHanziData(char) {
+  if (!("caches" in window)) return null;
+  const cache = await caches.open(HANZI_DATA_CACHE);
+  const cached = await cache.match(hanziCacheUrl(char));
+  return cached ? cached.json() : null;
+}
+
+async function fetchAndCacheHanziData(char) {
+  if (!navigator.onLine || !("caches" in window)) return null;
+  const response = await fetch(hanziCdnUrl(char), { mode: "cors" });
+  if (!response.ok) return null;
+  const data = await response.clone().json();
+  const cache = await caches.open(HANZI_DATA_CACHE);
+  await cache.put(
+    hanziCacheUrl(char),
+    new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } })
+  );
+  return data;
+}
+
+async function loadHanziStrokeData(char) {
+  const cached = await readCachedHanziData(char);
+  if (cached) return cached;
+  return fetchAndCacheHanziData(char);
+}
+
+function setTextTitle(item) {
+  els.itemTitle.replaceChildren(document.createTextNode(item.display));
+  els.itemTitle.classList.remove("has-stroke-order");
+  els.itemTitle.removeAttribute("aria-label");
+}
+
+function createHanziWriterTarget(item) {
+  els.itemTitle.classList.add("has-stroke-order");
+  els.itemTitle.setAttribute("aria-label", item.display);
+  const target = document.createElement("span");
+  target.className = "hanzi-writer-target";
+  target.setAttribute("aria-hidden", "true");
+  els.itemTitle.replaceChildren(target);
+  return target;
+}
+
+function targetSize(target) {
+  const rect = target.getBoundingClientRect();
+  return Math.max(86, Math.round(Math.min(rect.width || 112, rect.height || 112)));
+}
+
+async function renderInfoStrokeOrder(item, token) {
+  const char = singleHanziForStroke(item);
+  if (!char || !window.HanziWriter) return;
+
+  try {
+    const data = await loadHanziStrokeData(char);
+    if (token !== hanziStrokeRenderToken || !data) return;
+    const target = createHanziWriterTarget(item);
+    const size = targetSize(target);
+    hanziWriter = window.HanziWriter.create(target, char, {
+      width: size,
+      height: size,
+      padding: 5,
+      showOutline: true,
+      showCharacter: false,
+      strokeAnimationSpeed: 1.15,
+      delayBetweenStrokes: 80,
+      delayBetweenLoops: 2000,
+      strokeColor: "#15736a",
+      outlineColor: "#d8d0c1",
+      charDataLoader: (requestedChar, onComplete) => {
+        if (requestedChar === char) onComplete(data);
+      }
+    });
+    hanziWriter.loopCharacterAnimation();
+  } catch (error) {
+    if (token === hanziStrokeRenderToken) setTextTitle(item);
+  }
+}
+
 function renderCurrent(options = {}) {
   const item = currentItem();
-  els.itemType.textContent = CATEGORY_LABELS[item.category];
-  els.itemTitle.textContent = item.display;
-  els.hintText.textContent = formatHint(item);
-  els.meaningText.textContent = item.meaning || CATEGORY_LABELS[item.category];
+  stopHanziStrokePlayback();
+  const strokeToken = hanziStrokeRenderToken;
+  setTextTitle(item);
+  renderInfoStrokeOrder(item, strokeToken);
+  renderInfoDetail(item);
   els.traceText.textContent = item.display;
   els.traceText.className = `trace-text ${item.category}`;
   renderSettings();
@@ -722,10 +967,51 @@ function speakCurrent() {
   speakWithTts(item);
 }
 
-function speakWithTts(item) {
-  if (!("speechSynthesis" in window)) return;
+function needsChineseVoice(item) {
+  return item.category === "hanzi";
+}
+
+function notifyChineseVoiceUnavailable() {
+  if (chineseVoiceWarningShown) return;
+  chineseVoiceWarningShown = true;
+  window.alert("此裝置沒有可用中文語音");
+}
+
+function findVoiceForItem(item) {
+  if (!("speechSynthesis" in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if (needsChineseVoice(item)) {
+    return voices.find((voice) => voice.lang === "zh-TW")
+      || voices.find((voice) => voice.lang === "zh-Hant-TW")
+      || voices.find((voice) => voice.lang.startsWith("zh-Hant"))
+      || voices.find((voice) => voice.lang.startsWith("zh"))
+      || null;
+  }
+  const lang = item.lang || (item.category === "word" || item.category === "letter" ? "en-US" : "zh-TW");
+  return voices.find((voice) => voice.lang === lang)
+    || voices.find((voice) => voice.lang.startsWith(lang.split("-")[0]))
+    || null;
+}
+
+function speakWithTts(item, retried = false) {
+  if (!("speechSynthesis" in window)) {
+    if (needsChineseVoice(item)) notifyChineseVoiceUnavailable();
+    return;
+  }
+
+  const voice = findVoiceForItem(item);
+  if (needsChineseVoice(item) && !voice) {
+    if (!retried && window.speechSynthesis.getVoices().length === 0) {
+      window.setTimeout(() => speakWithTts(item, true), 350);
+      return;
+    }
+    notifyChineseVoiceUnavailable();
+    return;
+  }
+
   const utterance = new SpeechSynthesisUtterance(item.speakText || item.display);
   utterance.lang = item.lang || (item.category === "word" || item.category === "letter" ? "en-US" : "zh-TW");
+  if (voice) utterance.voice = voice;
   utterance.rate = item.category === "word" || item.category === "letter" ? 0.82 : 0.78;
   utterance.pitch = 1;
   window.speechSynthesis.speak(utterance);
@@ -886,7 +1172,7 @@ function updateOnlineStatus() {
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
-  navigator.serviceWorker.register("./sw.js").then(updateOnlineStatus).catch(() => {
+  navigator.serviceWorker.register("../sw.js").then(updateOnlineStatus).catch(() => {
     els.offlineStatus.textContent = "離線快取尚未啟用";
   });
 }

@@ -8,9 +8,12 @@ Bula Teach is a personal-use iPad PWA for tracing bopomofo, letters, Chinese cha
 
 This project is intentionally static and dependency-free:
 
-- `index.html` contains the app shell, dialogs, and controls.
-- `styles.css` defines the iPad-friendly accordion layout, tracing area, and modal styling.
-- `app.js` contains lesson data, drawing logic, local storage, import/export, settings, and playback.
+- `index.html` contains only the main menu launcher.
+- `styles.css` defines the main menu layout.
+- `home.js` updates home-screen online/offline status and registers the Service Worker.
+- `copybook/` contains the tracing app served at `/copybook/`.
+- `copybook/copybook.css` defines the iPad-friendly accordion layout, tracing area, and modal styling.
+- `copybook/copybook.js` contains lesson data, drawing logic, local storage, import/export, settings, and playback.
 - `sw.js` enables offline caching.
 - `manifest.webmanifest` enables installable PWA behavior.
 - `_headers` contains Cloudflare response headers.
@@ -22,7 +25,9 @@ Do not add a framework or build step unless the app has grown enough to justify 
 
 ## UI Model
 
-The main screen should stay simple:
+The root screen should stay simple: two large launch cards, one for `/copybook/` and one for `/math/`.
+
+The copybook screen should stay focused:
 
 - Left sidebar: four collapsible categories only: `注音`, `字母`, `國字`, `英文單字`.
 - Categories may all be collapsed; do not force one to stay open.
@@ -109,6 +114,16 @@ Default bopomofo lessons use Ministry of Education audio copied into `assets/aud
 
 If audio assets are added or renamed, update `APP_ASSETS` in `sw.js` and bump `CACHE_NAME` so installed PWAs refresh their cache.
 
+## Copybook Page
+
+The `/copybook/` page is part of the same static deployment. It is intentionally separate from the root menu files:
+
+- `copybook/index.html`
+- `copybook/copybook.css`
+- `copybook/copybook.js`
+
+Keep `/copybook/` assets listed in `APP_ASSETS` so the page works offline with the rest of the PWA.
+
 ## Math Page
 
 The `/math/` page is part of the same static deployment. It is intentionally separate from the tracing app files:
@@ -125,22 +140,25 @@ Keep `/math/` assets listed in `APP_ASSETS` so the page works offline with the r
 
 The app can be deployed as a static Cloudflare Pages project or via Cloudflare Workers/Wrangler. HTTPS is required for reliable PWA Service Worker behavior on iPad Safari.
 
-When changing core app files, `/math/` files, or precached assets, update `APP_ASSETS` as needed and bump `CACHE_NAME` in `sw.js`.
+When changing root menu files, `/copybook/` files, `/math/` files, or precached assets, update `APP_ASSETS` as needed and bump `CACHE_NAME` in `sw.js`.
 
 ## Verification
 
 Before finishing a code change, run:
 
 ```bash
-node --check app.js
-node --check sw.js
+node --check home.js
+node --check copybook/copybook.js
 node --check math/math.js
+node --check sw.js
 ```
 
 For static serving checks, use the local server if it is running:
 
 ```bash
 curl -I http://localhost:5173/
+curl -I http://localhost:5173/copybook/
+curl -I http://localhost:5173/math/
 ```
 
 ## Coding Constraints
