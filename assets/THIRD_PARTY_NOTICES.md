@@ -23,3 +23,20 @@ Sources:
 - Hanzi Writer Data: https://github.com/chanind/hanzi-writer-data
 - Make Me A Hanzi: https://github.com/skishore/makemeahanzi
 - Arphic Public License text: https://github.com/chanind/hanzi-writer-data/blob/master/ARPHICPL.TXT
+
+## Ministry of Education Stroke Order Site
+
+The copybook page includes bopomofo stroke-order JSON converted from XML data embedded in the Ministry of Education Stroke Order Learning Site. The converted JSON keeps only the track data needed for local stroke-order playback in the card information area. These converted files are not original assets of this project.
+
+注音筆順參考來源：常用國字標準字體筆順學習網 http://stroke-order.learningweb.moe.edu.tw
+
+「常用國字標準字體筆順學習網」著作權係中華民國教育部所有。其目的為提供本部標準楷體字之筆順教學利用，不得用於商業用途。
+
+Source:
+
+- Ministry of Education Stroke Order Learning Site: https://stroke-order.learningweb.moe.edu.tw/
+- Bopomofo stroke-order index: https://stroke-order.learningweb.moe.edu.tw/phonetic.jsp
+
+License noted on the source site:
+
+- Creative Commons Attribution-NonCommercial-NoDerivatives 3.0 Taiwan: https://creativecommons.org/licenses/by-nc-nd/3.0/tw/

@@ -4,11 +4,11 @@ const BOPOMOFO_BASE = [
   ["ㄍ", "F9.WAV"], ["ㄎ", "F10.WAV"], ["ㄏ", "F11.WAV"], ["ㄐ", "F12.WAV"],
   ["ㄑ", "F13.WAV"], ["ㄒ", "F14.WAV"], ["ㄓ", "F15.WAV"], ["ㄔ", "F16.WAV"],
   ["ㄕ", "F17.WAV"], ["ㄖ", "F18.WAV"], ["ㄗ", "F19.WAV"], ["ㄘ", "F20.WAV"],
-  ["ㄙ", "F21.WAV"], ["ㄧ", "F22.WAV"], ["ㄨ", "F23.WAV"], ["ㄩ", "F24.WAV"],
-  ["ㄚ", "F25.WAV"], ["ㄛ", "F26.WAV"], ["ㄜ", "F27.WAV"], ["ㄝ", "F28.WAV"],
-  ["ㄞ", "F29.WAV"], ["ㄟ", "F30.WAV"], ["ㄠ", "F31.WAV"], ["ㄡ", "F32.WAV"],
-  ["ㄢ", "F33.WAV"], ["ㄣ", "F34.WAV"], ["ㄤ", "F35.WAV"], ["ㄥ", "F36.WAV"],
-  ["ㄦ", "F37.WAV"]
+  ["ㄙ", "F21.WAV"], ["ㄚ", "F22.WAV"], ["ㄛ", "F23.WAV"], ["ㄜ", "F24.WAV"],
+  ["ㄝ", "F25.WAV"], ["ㄞ", "F26.WAV"], ["ㄟ", "F27.WAV"], ["ㄠ", "F28.WAV"],
+  ["ㄡ", "F29.WAV"], ["ㄢ", "F30.WAV"], ["ㄣ", "F31.WAV"], ["ㄤ", "F32.WAV"],
+  ["ㄥ", "F33.WAV"], ["ㄦ", "F34.WAV"], ["ㄧ", "F35.WAV"], ["ㄨ", "F36.WAV"],
+  ["ㄩ", "F37.WAV"]
 ].map(([symbol, file], index) => ({
   id: `bpmf_${index + 1}`,
   category: "bopomofo",
@@ -464,6 +464,10 @@ const DEFAULT_SETTINGS = { autoPlay: false, showTemplate: true, gridSize: 2 };
 const HANZI_DATA_CACHE = "bula-hanzi-writer-data-v1";
 const HANZI_DATA_VERSION = "2.0.1";
 const HANZI_DATA_CDN = `https://cdn.jsdelivr.net/npm/hanzi-writer-data@${HANZI_DATA_VERSION}`;
+const BOPOMOFO_STROKE_DATA_BASE = "../assets/bopomofo-stroke-data";
+const BOPOMOFO_STROKE_LOOP_PAUSE_MS = 2000;
+const BOPOMOFO_STROKE_MIN_MS = 720;
+const BOPOMOFO_STROKE_MAX_MS = 1500;
 
 const state = {
   lessons: loadLessons(),
@@ -522,6 +526,7 @@ const els = {
 const ctx = els.canvas.getContext("2d");
 let chineseVoiceWarningShown = false;
 let hanziWriter = null;
+let bopomofoStrokeTimer = null;
 let hanziStrokeRenderToken = 0;
 
 function normalizeLegacyLesson(item) {
@@ -788,7 +793,9 @@ function updateFormLabels() {
 function stopHanziStrokePlayback() {
   hanziStrokeRenderToken += 1;
   if (hanziWriter) hanziWriter.pauseAnimation()?.catch(() => {});
+  if (bopomofoStrokeTimer) window.clearTimeout(bopomofoStrokeTimer);
   hanziWriter = null;
+  bopomofoStrokeTimer = null;
 }
 
 function singleHanziForStroke(item) {
@@ -831,9 +838,137 @@ async function loadHanziStrokeData(char) {
   return fetchAndCacheHanziData(char);
 }
 
+function bopomofoStrokeDataUrl(item) {
+  return item.category === "bopomofo" ? `${BOPOMOFO_STROKE_DATA_BASE}/${encodeURIComponent(item.display)}.json` : null;
+}
+
+async function loadBopomofoStrokeData(item) {
+  const url = bopomofoStrokeDataUrl(item);
+  if (!url) return null;
+  const response = await fetch(url);
+  if (!response.ok) return null;
+  const data = await response.json();
+  return Array.isArray(data.strokes) && data.strokes.length ? data : null;
+}
+
+function createBopomofoStrokeSvg(data) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "bopomofo-stroke-svg");
+  svg.setAttribute("viewBox", data.viewBox || "0 0 2048 2048");
+  svg.setAttribute("aria-hidden", "true");
+
+  const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  group.setAttribute("transform", data.transform || "translate(0,2048) scale(1,-1)");
+
+  data.strokes.forEach((stroke) => {
+    const trail = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    trail.setAttribute("class", "bopomofo-stroke-trail");
+    trail.setAttribute("d", stroke.track);
+    trail.setAttribute("fill", "none");
+    trail.setAttribute("stroke", "#15736a");
+    trail.setAttribute("stroke-linecap", "round");
+    trail.setAttribute("stroke-linejoin", "round");
+    trail.setAttribute("stroke-width", String(Math.max(140, Number(stroke.width || 150) * 1.18)));
+    trail.style.opacity = "0";
+
+    const track = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    track.setAttribute("class", "bopomofo-stroke-track-path");
+    track.setAttribute("d", stroke.track);
+    track.setAttribute("fill", "none");
+    track.setAttribute("stroke", "transparent");
+    track.setAttribute("pointer-events", "none");
+
+    group.append(trail, track);
+  });
+
+  const pen = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  pen.setAttribute("class", "bopomofo-stroke-pen");
+  pen.setAttribute("r", "70");
+  group.append(pen);
+
+  svg.append(group);
+  return svg;
+}
+
+function resetBopomofoStrokeSvg(svg) {
+  svg.querySelectorAll(".bopomofo-stroke-trail").forEach((path) => {
+    path.style.opacity = "0";
+    path.style.strokeDasharray = "1";
+    path.style.strokeDashoffset = "1";
+  });
+  const pen = svg.querySelector(".bopomofo-stroke-pen");
+  if (pen) pen.classList.remove("is-active");
+}
+
+function playBopomofoStrokeSvg(svg, token) {
+  const trails = Array.from(svg.querySelectorAll(".bopomofo-stroke-trail"));
+  const tracks = Array.from(svg.querySelectorAll(".bopomofo-stroke-track-path"));
+  const pen = svg.querySelector(".bopomofo-stroke-pen");
+  if (!trails.length || !tracks.length || !pen || token !== hanziStrokeRenderToken) return;
+  resetBopomofoStrokeSvg(svg);
+
+  const showStroke = (index) => {
+    if (token !== hanziStrokeRenderToken) return;
+    if (index >= trails.length) {
+      bopomofoStrokeTimer = window.setTimeout(() => playBopomofoStrokeSvg(svg, token), BOPOMOFO_STROKE_LOOP_PAUSE_MS);
+      return;
+    }
+
+    const trail = trails[index];
+    const track = tracks[index];
+    const length = track.getTotalLength();
+    const duration = Math.max(BOPOMOFO_STROKE_MIN_MS, Math.min(BOPOMOFO_STROKE_MAX_MS, length * 0.42));
+    const startedAt = performance.now();
+    trail.style.strokeDasharray = String(length);
+    trail.style.strokeDashoffset = String(length);
+    pen.classList.add("is-active");
+
+    trail.style.opacity = "0.7";
+
+    const step = (now) => {
+      if (token !== hanziStrokeRenderToken) return;
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const point = track.getPointAtLength(length * progress);
+      trail.style.strokeDashoffset = String(length * (1 - progress));
+      pen.setAttribute("cx", String(point.x));
+      pen.setAttribute("cy", String(point.y));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+        return;
+      }
+      trail.style.strokeDashoffset = "0";
+      trail.style.opacity = "0.86";
+      pen.classList.remove("is-active");
+      bopomofoStrokeTimer = window.setTimeout(() => showStroke(index + 1), 140);
+    };
+
+    window.requestAnimationFrame(step);
+  };
+
+  showStroke(0);
+}
+
+async function renderBopomofoStrokeOrder(item, token) {
+  if (item.category !== "bopomofo") return false;
+  try {
+    const data = await loadBopomofoStrokeData(item);
+    if (token !== hanziStrokeRenderToken || !data) return false;
+    els.itemTitle.classList.remove("has-stroke-order");
+    els.itemTitle.classList.add("has-bopomofo-stroke");
+    els.itemTitle.setAttribute("aria-label", item.display);
+    const svg = createBopomofoStrokeSvg(data);
+    els.itemTitle.replaceChildren(svg);
+    playBopomofoStrokeSvg(svg, token);
+    return true;
+  } catch (error) {
+    if (token === hanziStrokeRenderToken) setTextTitle(item);
+    return false;
+  }
+}
+
 function setTextTitle(item) {
   els.itemTitle.replaceChildren(document.createTextNode(item.display));
-  els.itemTitle.classList.remove("has-stroke-order");
+  els.itemTitle.classList.remove("has-stroke-order", "has-bopomofo-stroke");
   els.itemTitle.removeAttribute("aria-label");
 }
 
@@ -887,7 +1022,9 @@ function renderCurrent(options = {}) {
   stopHanziStrokePlayback();
   const strokeToken = hanziStrokeRenderToken;
   setTextTitle(item);
-  renderInfoStrokeOrder(item, strokeToken);
+  renderBopomofoStrokeOrder(item, strokeToken).then((shown) => {
+    if (!shown) renderInfoStrokeOrder(item, strokeToken);
+  });
   renderInfoDetail(item);
   els.traceText.textContent = item.display;
   els.traceText.className = `trace-text ${item.category}`;

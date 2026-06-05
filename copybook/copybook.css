@@ -310,6 +310,37 @@ h1 { font-size: 20px; }
   width: clamp(86px, 10vw, 128px);
   height: clamp(86px, 10vw, 128px);
 }
+.info-main h2.has-bopomofo-stroke {
+  display: grid;
+  place-items: center;
+  width: clamp(86px, 10vw, 128px);
+  height: clamp(86px, 10vw, 128px);
+}
+.bopomofo-stroke-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.bopomofo-stroke-trail {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+.bopomofo-stroke-track-path {
+  fill: none;
+  stroke: transparent;
+  pointer-events: none;
+}
+.bopomofo-stroke-pen {
+  fill: var(--accent);
+  opacity: 0;
+  filter: drop-shadow(0 0 8px rgba(21, 115, 106, 0.28));
+  transition: opacity 120ms ease;
+}
+.bopomofo-stroke-pen.is-active { opacity: 1; }
 .hanzi-writer-target {
   display: block;
   width: 100%;
