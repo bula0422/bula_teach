@@ -17,50 +17,61 @@
           </div>
         </div>
 
-        <section class="mode is-open" data-mode="add">
-          <button class="mode-head" type="button">加法</button>
-          <div class="mode-body">
-            <label>加數位數 <input id="addDigits" type="number" min="1" max="4" value="2" /></label>
-            <button class="generate-mode" type="button" data-generate="add">開始加法</button>
-          </div>
-        </section>
+        <nav class="math-tabs" aria-label="數學分頁">
+          <button class="math-tab is-active" type="button" data-view="practice">算術練習</button>
+          <button class="math-tab" type="button" data-view="table">九九乘法表</button>
+        </nav>
 
-        <section class="mode" data-mode="sub">
-          <button class="mode-head" type="button">減法</button>
-          <div class="mode-body">
-            <label>數字位數 <input id="subDigits" type="number" min="1" max="4" value="2" /></label>
-            <button class="generate-mode" type="button" data-generate="sub">開始減法</button>
-          </div>
-        </section>
+        <div class="practice-controls" id="practiceControls">
+          <section class="mode is-open" data-mode="add">
+            <button class="mode-head" type="button">加法</button>
+            <div class="mode-body">
+              <label>加數位數 <input id="addDigits" type="number" min="1" max="4" value="2" /></label>
+              <button class="generate-mode" type="button" data-generate="add">開始加法</button>
+            </div>
+          </section>
 
-        <section class="mode" data-mode="mul">
-          <button class="mode-head" type="button">乘法</button>
-          <div class="mode-body split">
-            <label>第一個數 <input id="mulLeftDigits" type="number" min="1" max="3" value="2" /></label>
-            <label>第二個數 <input id="mulRightDigits" type="number" min="1" max="3" value="1" /></label>
-            <button class="generate-mode" type="button" data-generate="mul">開始乘法</button>
-          </div>
-        </section>
+          <section class="mode" data-mode="sub">
+            <button class="mode-head" type="button">減法</button>
+            <div class="mode-body">
+              <label>數字位數 <input id="subDigits" type="number" min="1" max="4" value="2" /></label>
+              <button class="generate-mode" type="button" data-generate="sub">開始減法</button>
+            </div>
+          </section>
 
-        <section class="mode" data-mode="div">
-          <button class="mode-head" type="button">除法</button>
-          <div class="mode-body split">
-            <label>商的位數 <input id="divQuotientDigits" type="number" min="1" max="3" value="2" /></label>
-            <label>除數位數 <input id="divisorDigits" type="number" min="1" max="2" value="1" /></label>
-            <button class="generate-mode" type="button" data-generate="div">開始除法</button>
-          </div>
-        </section>
+          <section class="mode" data-mode="mul">
+            <button class="mode-head" type="button">乘法</button>
+            <div class="mode-body split">
+              <label>第一個數 <input id="mulLeftDigits" type="number" min="1" max="3" value="2" /></label>
+              <label>第二個數 <input id="mulRightDigits" type="number" min="1" max="3" value="1" /></label>
+              <button class="generate-mode" type="button" data-generate="mul">開始乘法</button>
+            </div>
+          </section>
 
-        <section class="mode" data-mode="mixed">
-          <button class="mode-head" type="button">綜合運算</button>
-          <div class="mode-body split">
-            <label>數字位數 <input id="mixedDigits" type="number" min="1" max="3" value="1" /></label>
-            <label>運算長度 <input id="mixedTerms" type="number" min="3" max="6" value="4" /></label>
-            <button class="generate-mode" type="button" data-generate="mixed">開始綜合</button>
-          </div>
-        </section>
+          <section class="mode" data-mode="div">
+            <button class="mode-head" type="button">除法</button>
+            <div class="mode-body split">
+              <label>商的位數 <input id="divQuotientDigits" type="number" min="1" max="3" value="2" /></label>
+              <label>除數位數 <input id="divisorDigits" type="number" min="1" max="2" value="1" /></label>
+              <button class="generate-mode" type="button" data-generate="div">開始除法</button>
+            </div>
+          </section>
 
-        <div class="sidebar-bottom">
+          <section class="mode" data-mode="mixed">
+            <button class="mode-head" type="button">綜合運算</button>
+            <div class="mode-body split">
+              <label>數字位數 <input id="mixedDigits" type="number" min="1" max="3" value="1" /></label>
+              <label>運算長度 <input id="mixedTerms" type="number" min="3" max="6" value="4" /></label>
+              <button class="generate-mode" type="button" data-generate="mixed">開始綜合</button>
+            </div>
+          </section>
+        </div>
+
+        <div class="table-controls is-hidden" id="tableControls">
+          <p class="table-note">在右側點左列和上排的數字，中間會顯示乘積。</p>
+        </div>
+
+        <div class="sidebar-bottom" id="practiceBottom">
           <div class="stats" id="statsBox"></div>
           <section class="settings-box">
             <button class="mode-head" id="settingsToggle" type="button">設定</button>
@@ -72,9 +83,16 @@
       </aside>
 
       <section class="preview-shell" aria-label="試卷預覽">
-        <div class="paper" id="paper">
+        <div class="paper practice-view" id="paper">
           <canvas class="paper-canvas" id="paperCanvas" aria-label="手寫計算區"></canvas>
           <div class="single-problem" id="problemArea"></div>
+        </div>
+        <div class="times-view is-hidden" id="timesView" aria-label="九九乘法表">
+          <section class="times-board" aria-label="乘法表互動區">
+            <div class="top-factors" id="topFactors" aria-label="上方乘數"></div>
+            <div class="side-factors" id="sideFactors" aria-label="左側乘數"></div>
+            <div class="product-display" id="productDisplay" aria-live="polite"></div>
+          </section>
         </div>
         <button class="floating erase" id="eraseButton" type="button" aria-label="清除手寫" title="清除手寫">↺</button>
         <button class="floating finish" id="finishButton" type="button">作答完成</button>

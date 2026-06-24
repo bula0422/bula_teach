@@ -2,7 +2,7 @@ const STATS_KEY = "bula-math-stats-v1";
 
 const els = {
   modes: [...document.querySelectorAll(".mode")],
-  modeHeads: [...document.querySelectorAll(".mode-head")],
+  modeHeads: [...document.querySelectorAll(".mode .mode-head")],
   generateButtons: [...document.querySelectorAll(".generate-mode")],
   problemArea: document.querySelector("#problemArea"),
   paperCanvas: document.querySelector("#paperCanvas"),
@@ -22,10 +22,22 @@ const els = {
   settingsToggle: document.querySelector("#settingsToggle"),
   settingsBody: document.querySelector("#settingsBody"),
   statsBox: document.querySelector("#statsBox"),
-  clearStats: document.querySelector("#clearStatsButton")
+  clearStats: document.querySelector("#clearStatsButton"),
+  mathTabs: [...document.querySelectorAll(".math-tab")],
+  practiceControls: document.querySelector("#practiceControls"),
+  tableControls: document.querySelector("#tableControls"),
+  practiceBottom: document.querySelector("#practiceBottom"),
+  paper: document.querySelector("#paper"),
+  timesView: document.querySelector("#timesView"),
+  topFactors: document.querySelector("#topFactors"),
+  sideFactors: document.querySelector("#sideFactors"),
+  productDisplay: document.querySelector("#productDisplay")
 };
 
 let currentMode = "add";
+let currentView = "practice";
+let selectedLeftFactor = 9;
+let selectedTopFactor = 9;
 let currentProblem = null;
 let currentAnswered = false;
 let toolMode = "pen";
@@ -46,7 +58,73 @@ function saveStats() {
 }
 
 function renderStats() {
-  els.statsBox.textContent = `已作答 ${stats.total} 題 · 正確 ${stats.correct} · 錯誤 ${stats.wrong}`;
+  els.statsBox.textContent = "已作答 " + stats.total + " 題 · 正確 " + stats.correct + " · 錯誤 " + stats.wrong;
+}
+
+function renderProductDisplay() {
+  els.productDisplay.textContent = "";
+
+  const expression = document.createElement("div");
+  expression.className = "product-expression";
+  expression.textContent = selectedLeftFactor + " × " + selectedTopFactor;
+
+  const value = document.createElement("strong");
+  value.textContent = String(selectedLeftFactor * selectedTopFactor);
+
+  els.productDisplay.append(expression, value);
+}
+
+function makeFactorButton(value, axis) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "axis-factor";
+  const isActive = axis === "left" ? value === selectedLeftFactor : value === selectedTopFactor;
+  button.classList.toggle("is-active", isActive);
+  button.textContent = String(value);
+  button.addEventListener("click", () => {
+    if (axis === "left") selectedLeftFactor = value;
+    else selectedTopFactor = value;
+    renderMultiplicationPicker();
+  });
+  return button;
+}
+
+function renderMultiplicationPicker() {
+  els.topFactors.textContent = "";
+  els.sideFactors.textContent = "";
+
+  for (let value = 1; value <= 9; value += 1) {
+    els.topFactors.append(makeFactorButton(value, "top"));
+    els.sideFactors.append(makeFactorButton(value, "left"));
+  }
+
+  renderProductDisplay();
+}
+
+function setMathView(view) {
+  currentView = view;
+  const showPractice = view === "practice";
+
+  els.mathTabs.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.view === view);
+  });
+  els.practiceControls.classList.toggle("is-hidden", !showPractice);
+  els.tableControls.classList.toggle("is-hidden", showPractice);
+  els.practiceBottom.classList.toggle("is-hidden", !showPractice);
+  els.paper.classList.toggle("is-hidden", !showPractice);
+  els.timesView.classList.toggle("is-hidden", showPractice);
+  els.erase.classList.toggle("is-hidden", !showPractice);
+  els.finish.classList.toggle("is-hidden", !showPractice);
+  els.result.classList.remove("is-visible");
+
+  if (showPractice) {
+    window.requestAnimationFrame(() => {
+      resizePaperCanvas();
+      clearPaperCanvas();
+    });
+  } else {
+    renderMultiplicationPicker();
+  }
 }
 
 function randomInt(min, max) {
@@ -290,9 +368,14 @@ els.paperCanvas.addEventListener("pointerup", stopPaperDrawing);
 els.paperCanvas.addEventListener("pointercancel", stopPaperDrawing);
 window.addEventListener("resize", () => {
   window.requestAnimationFrame(() => {
+    if (currentView !== "practice") return;
     resizePaperCanvas();
     clearPaperCanvas();
   });
+});
+
+els.mathTabs.forEach((button) => {
+  button.addEventListener("click", () => setMathView(button.dataset.view));
 });
 
 els.modeHeads.forEach((button) => {

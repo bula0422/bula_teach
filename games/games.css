@@ -1,0 +1,282 @@
+:root {
+  color-scheme: light;
+  --table: #22352f;
+  --felt: #2f6b63;
+  --felt-dark: #1f4e48;
+  --panel: #fffaf0;
+  --ink: #20312d;
+  --muted: #65746f;
+  --line: rgba(255, 255, 255, 0.24);
+  --gold: #f0bf4f;
+  --red: #c45138;
+  --blue: #2f75a8;
+  --shadow: 0 18px 42px rgba(7, 19, 16, 0.28);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--table);
+  color: #fff;
+  font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body, body * {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+body input, body textarea, body select, body [contenteditable="true"] {
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  user-select: text;
+}
+button, select { color: inherit; font: inherit; }
+button { cursor: pointer; touch-action: manipulation; }
+a { color: inherit; }
+h1, h2, p { margin: 0; }
+
+.game-app {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 100dvh;
+  padding: max(14px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  gap: 14px;
+  background:
+    linear-gradient(115deg, rgba(240, 191, 79, 0.12), transparent 30%),
+    linear-gradient(245deg, rgba(47, 117, 168, 0.16), transparent 34%),
+    var(--table);
+}
+
+.game-topbar,
+.game-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 74px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 250, 240, 0.11);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+
+.back-button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 40px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.game-title {
+  display: grid;
+  gap: 2px;
+  min-width: 150px;
+}
+.game-title span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  font-weight: 700;
+}
+.game-title strong {
+  font-size: 28px;
+  line-height: 1.08;
+}
+
+.game-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-left: auto;
+}
+.game-controls label {
+  display: grid;
+  grid-template-columns: auto minmax(74px, auto);
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.game-controls span {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 14px;
+  font-weight: 800;
+}
+.game-controls select {
+  min-width: 74px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 0 10px;
+  font-weight: 800;
+}
+.new-game-button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--gold);
+  color: #2b2413;
+  padding: 0 18px;
+  font-weight: 900;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+}
+
+.play-area {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 14px;
+  min-height: 0;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 42px 42px,
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px) 0 0 / 42px 42px,
+    var(--felt);
+  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.06), var(--shadow);
+  overflow: hidden;
+}
+
+.message-strip {
+  justify-self: center;
+  max-width: min(680px, 100%);
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 10px 24px rgba(7, 19, 16, 0.18);
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(80px, 1fr));
+  gap: clamp(10px, 1.5vw, 16px);
+  place-content: center;
+  align-self: center;
+  justify-self: center;
+  width: min(100%, 820px);
+  min-height: 0;
+}
+
+.memory-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  min-height: 72px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: clamp(32px, 7vw, 72px);
+  font-weight: 950;
+  box-shadow: 0 14px 26px rgba(6, 16, 13, 0.3);
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+.memory-card::before {
+  content: "?";
+  display: grid;
+  place-items: center;
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 34%),
+    var(--blue);
+  color: #fff;
+  font-size: clamp(34px, 6vw, 66px);
+  font-weight: 950;
+}
+.memory-card.is-open,
+.memory-card.is-matched {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 18px 30px rgba(6, 16, 13, 0.34);
+}
+.memory-card.is-open::before,
+.memory-card.is-matched::before { display: none; }
+.memory-card.is-matched {
+  background: #ffe8a6;
+  color: #2b2413;
+}
+.memory-card.is-matched::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 3px solid var(--red);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.game-stats {
+  justify-content: center;
+}
+.game-stats div {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 150px;
+  padding: 8px 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+}
+.game-stats div:last-child { border-right: 0; }
+.game-stats span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  font-weight: 800;
+}
+.game-stats strong {
+  font-size: 24px;
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  body { overflow: auto; }
+  .game-app { min-height: 100dvh; }
+  .game-topbar {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    min-height: auto;
+  }
+  .game-controls {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+    margin-left: 0;
+  }
+  .game-controls label,
+  .new-game-button { flex: 1 1 0; }
+  .play-area { min-height: 520px; }
+  .memory-grid { grid-template-columns: repeat(4, minmax(58px, 1fr)); }
+  .game-stats { flex-wrap: wrap; }
+  .game-stats div { border-right: 0; justify-content: center; }
+}
+
+@media (max-width: 560px) {
+  .game-controls { flex-wrap: wrap; }
+  .game-controls label { grid-template-columns: 1fr; }
+  .memory-grid { grid-template-columns: repeat(4, minmax(50px, 1fr)); }
+  .game-stats div { min-width: 120px; }
+}

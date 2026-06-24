@@ -1,4 +1,4 @@
-const CACHE_NAME = "bula-teach-v59";
+const CACHE_NAME = "bula-teach-v66";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -20,6 +20,7 @@ const APP_ASSETS = [
   "./app-icon.png",
   "./assets/menu-copybook.svg",
   "./assets/menu-math.svg",
+  "./assets/menu-games.svg",
   "./assets/vendor/hanzi-writer-3.7.2.min.js",
   "./assets/bopomofo-stroke-data/ㄅ.json",
   "./assets/bopomofo-stroke-data/ㄆ.json",
@@ -63,6 +64,11 @@ const APP_ASSETS = [
   "./math/index.html",
   "./math/math.css",
   "./math/math.js",
+  "./games",
+  "./games/",
+  "./games/index.html",
+  "./games/games.css",
+  "./games/games.js",
   "./assets/THIRD_PARTY_NOTICES.md",
   "./assets/audio/bopomofo/F1.WAV",
   "./assets/audio/bopomofo/F2.WAV",
