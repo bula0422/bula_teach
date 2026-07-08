@@ -6,6 +6,8 @@ const els = {
   generateButtons: [...document.querySelectorAll(".generate-mode")],
   problemArea: document.querySelector("#problemArea"),
   paperCanvas: document.querySelector("#paperCanvas"),
+  mathWorkspace: document.querySelector("#mathWorkspace"),
+  eraserCursor: document.querySelector("#eraserCursor"),
   erase: document.querySelector("#eraseButton"),
   finish: document.querySelector("#finishButton"),
   result: document.querySelector("#resultBox"),
@@ -43,6 +45,7 @@ let currentAnswered = false;
 let toolMode = "pen";
 let erasePressStartedAt = 0;
 let erasePressTimer = null;
+let erasePointerHandledAt = 0;
 let stats = loadStats();
 
 function loadStats() {
@@ -224,6 +227,23 @@ function makeProblem(mode) {
   return makeMixed();
 }
 
+function preventNonDigitInput(event) {
+  if (!event.data) return;
+  if (/\D/.test(event.data)) event.preventDefault();
+}
+
+function keepDigitsOnly(input) {
+  const cleaned = input.value.replace(/\D/g, "");
+  if (input.value !== cleaned) input.value = cleaned;
+}
+
+function attachDigitOnlyInput(input) {
+  input.inputMode = "numeric";
+  input.pattern = "[0-9]*";
+  input.addEventListener("beforeinput", preventNonDigitInput);
+  input.addEventListener("input", () => keepDigitsOnly(input));
+}
+
 function renderProblem() {
   els.problemArea.innerHTML = "";
   els.result.classList.remove("is-visible");
@@ -240,7 +260,9 @@ function renderProblem() {
   input.type = "text";
   input.inputMode = "numeric";
   input.autocomplete = "off";
+  input.pattern = "[0-9]*";
   input.setAttribute("aria-label", "答案");
+  attachDigitOnlyInput(input);
   answerWrap.append(input);
 
   const mark = document.createElement("span");
@@ -300,6 +322,7 @@ function finish() {
 }
 
 const paperCtx = els.paperCanvas.getContext("2d");
+const ERASER_SIZE = 30;
 let paperDrawing = false;
 
 function resizePaperCanvas() {
@@ -316,7 +339,7 @@ function setCanvasTool() {
   paperCtx.lineJoin = "round";
   if (toolMode === "eraser") {
     paperCtx.globalCompositeOperation = "destination-out";
-    paperCtx.lineWidth = 30;
+    paperCtx.lineWidth = ERASER_SIZE;
     paperCtx.strokeStyle = "rgba(0,0,0,1)";
   } else {
     paperCtx.globalCompositeOperation = "source-over";
@@ -326,8 +349,40 @@ function setCanvasTool() {
 }
 
 function renderToolMode() {
-  els.erase.classList.toggle("is-active", toolMode === "eraser");
-  els.erase.title = toolMode === "eraser" ? "橡皮擦模式，長按清空" : "切換橡皮擦，長按清空";
+  const isEraser = toolMode === "eraser";
+  els.erase.classList.toggle("is-active", isEraser);
+  els.paper.classList.toggle("is-eraser", isEraser);
+  els.paperCanvas.classList.toggle("is-eraser", isEraser);
+  els.mathWorkspace.classList.toggle("is-eraser", isEraser);
+  els.erase.title = isEraser ? "橡皮擦模式，長按清空" : "切換橡皮擦，長按清空";
+  if (isEraser) showEraserCursorAtCanvasCenter();
+  else hideEraserCursor();
+}
+
+function hideEraserCursor() {
+  els.eraserCursor.classList.remove("is-visible");
+}
+
+function showEraserCursorAtCanvasCenter() {
+  const workspaceRect = els.mathWorkspace.getBoundingClientRect();
+  els.eraserCursor.style.left = workspaceRect.width / 2 + "px";
+  els.eraserCursor.style.top = workspaceRect.height / 2 + "px";
+  els.eraserCursor.style.width = ERASER_SIZE + "px";
+  els.eraserCursor.style.height = ERASER_SIZE + "px";
+  els.eraserCursor.classList.add("is-visible");
+}
+
+function updateEraserCursor(event) {
+  if (toolMode !== "eraser") return;
+  const workspaceRect = els.mathWorkspace.getBoundingClientRect();
+  const insideCanvas = event.clientX >= workspaceRect.left && event.clientX <= workspaceRect.right && event.clientY >= workspaceRect.top && event.clientY <= workspaceRect.bottom;
+  const localX = event.clientX - workspaceRect.left;
+  const localY = event.clientY - workspaceRect.top;
+  els.eraserCursor.style.left = localX + "px";
+  els.eraserCursor.style.top = localY + "px";
+  els.eraserCursor.style.width = ERASER_SIZE + "px";
+  els.eraserCursor.style.height = ERASER_SIZE + "px";
+  els.eraserCursor.classList.toggle("is-visible", insideCanvas);
 }
 
 function clearPaperCanvas() {
@@ -342,6 +397,7 @@ function paperPoint(event) {
 
 els.paperCanvas.addEventListener("pointerdown", (event) => {
   event.preventDefault();
+  updateEraserCursor(event);
   paperDrawing = true;
   els.paperCanvas.setPointerCapture(event.pointerId);
   setCanvasTool();
@@ -351,8 +407,9 @@ els.paperCanvas.addEventListener("pointerdown", (event) => {
 });
 
 els.paperCanvas.addEventListener("pointermove", (event) => {
-  if (!paperDrawing) return;
   event.preventDefault();
+  updateEraserCursor(event);
+  if (!paperDrawing) return;
   const p = paperPoint(event);
   paperCtx.lineTo(p.x, p.y);
   paperCtx.stroke();
@@ -362,8 +419,15 @@ function stopPaperDrawing(event) {
   if (!paperDrawing) return;
   paperDrawing = false;
   els.paperCanvas.releasePointerCapture(event.pointerId);
+  if (event.type === "pointercancel") hideEraserCursor();
+  else updateEraserCursor(event);
 }
 
+window.addEventListener("pointermove", updateEraserCursor);
+els.paperCanvas.addEventListener("pointerenter", updateEraserCursor);
+els.paperCanvas.addEventListener("pointerleave", () => {
+  if (!paperDrawing) hideEraserCursor();
+});
 els.paperCanvas.addEventListener("pointerup", stopPaperDrawing);
 els.paperCanvas.addEventListener("pointercancel", stopPaperDrawing);
 window.addEventListener("resize", () => {
@@ -409,6 +473,7 @@ function endEraseButtonPress(event) {
   event.preventDefault();
   window.clearTimeout(erasePressTimer);
   if (erasePressStartedAt && Date.now() - erasePressStartedAt < 800) toggleEraser();
+  erasePointerHandledAt = Date.now();
   erasePressStartedAt = 0;
 }
 
@@ -417,11 +482,16 @@ function cancelEraseButtonPress() {
   erasePressStartedAt = 0;
 }
 els.problemArea.addEventListener("input", clearAnswerMark);
+[els.addDigits, els.subDigits, els.mulLeftDigits, els.mulRightDigits, els.divQuotientDigits, els.divisorDigits, els.mixedDigits, els.mixedTerms].forEach(attachDigitOnlyInput);
 els.erase.addEventListener("pointerdown", startEraseButtonPress);
 els.erase.addEventListener("pointerup", endEraseButtonPress);
 els.erase.addEventListener("pointercancel", cancelEraseButtonPress);
 els.erase.addEventListener("pointerleave", cancelEraseButtonPress);
-els.erase.addEventListener("click", (event) => event.preventDefault());
+els.erase.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (Date.now() - erasePointerHandledAt < 600) return;
+  toggleEraser();
+});
 els.finish.addEventListener("click", finish);
 els.next.addEventListener("click", () => generate(currentMode));
 els.settingsToggle.addEventListener("click", () => els.settingsBody.classList.toggle("is-open"));

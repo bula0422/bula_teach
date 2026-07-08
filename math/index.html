@@ -84,7 +84,10 @@
 
       <section class="preview-shell" aria-label="試卷預覽">
         <div class="paper practice-view" id="paper">
-          <canvas class="paper-canvas" id="paperCanvas" aria-label="手寫計算區"></canvas>
+          <div class="math-workspace" id="mathWorkspace">
+            <canvas class="paper-canvas" id="paperCanvas" aria-label="手寫計算區"></canvas>
+            <div class="eraser-cursor" id="eraserCursor" aria-hidden="true"></div>
+          </div>
           <div class="single-problem" id="problemArea"></div>
         </div>
         <div class="times-view is-hidden" id="timesView" aria-label="九九乘法表">
@@ -94,7 +97,7 @@
             <div class="product-display" id="productDisplay" aria-live="polite"></div>
           </section>
         </div>
-        <button class="floating erase" id="eraseButton" type="button" aria-label="清除手寫" title="清除手寫">↺</button>
+        <button class="floating erase" id="eraseButton" type="button" aria-label="橡皮擦，長按清除手寫" title="切換橡皮擦，長按清空"><span class="erase-icon" aria-hidden="true"><span class="erase-rubber"></span><span class="erase-lines"></span></span></button>
         <button class="floating finish" id="finishButton" type="button">作答完成</button>
         <div class="result" id="resultBox" aria-live="polite">
           <span id="resultText"></span>
