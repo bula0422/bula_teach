@@ -1,4 +1,4 @@
-const CACHE_NAME = "bula-teach-v82";
+const CACHE_NAME = "bula-teach-v84";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -69,6 +69,7 @@ const APP_ASSETS = [
   "./games/index.html",
   "./games/games.css",
   "./games/games.js",
+  "./games/assets/adventure-island.png",
   "./assets/THIRD_PARTY_NOTICES.md",
   "./assets/audio/bopomofo/F1.WAV",
   "./assets/audio/bopomofo/F2.WAV",

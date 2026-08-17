@@ -68,9 +68,10 @@ h1, p { margin: 0; }
 }
 .launcher-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
+.launcher-card.game-launcher .launcher-visual { background: #dff0dc; }
 .launcher-card {
   display: grid;
   grid-template-rows: minmax(190px, 1fr) auto;
