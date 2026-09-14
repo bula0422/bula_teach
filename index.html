@@ -21,7 +21,9 @@
             <p id="offlineStatus">準備中</p>
           </div>
         </div>
-        <div class="launcher-grid" aria-label="功能選單">
+        <div class="launcher-carousel">
+          <button class="carousel-button carousel-button-prev" type="button" aria-label="顯示上一個功能" disabled>‹</button>
+          <div class="launcher-grid" aria-label="功能選單" tabindex="0">
           <a class="launcher-card" href="./copybook/">
             <span class="launcher-visual image-visual"><img src="./assets/menu-copybook.svg" alt="" /></span>
             <span class="launcher-copy">
@@ -44,6 +46,8 @@
             <span class="launcher-visual thinking-visual" aria-hidden="true">💡</span>
             <span class="launcher-copy"><strong>思考小教室</strong><small>隨機文字題、閱讀理解與邏輯推理</small></span>
           </a>
+          </div>
+          <button class="carousel-button carousel-button-next" type="button" aria-label="顯示下一個功能">›</button>
         </div>
       </section>
     </main>
