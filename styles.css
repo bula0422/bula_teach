@@ -103,6 +103,10 @@ h1, p { margin: 0; }
 .carousel-button:focus-visible { outline: 4px solid rgba(21, 115, 106, 0.25); outline-offset: 3px; }
 .launcher-card.game-launcher .launcher-visual { background: #dff0dc; }
 .launcher-card.thinking-launcher .launcher-visual { background: #fff0bd; }
+.launcher-card.flashcard-launcher .launcher-visual { background: #e8f4ff; }
+.flashcard-visual { gap: 4px; color: #174b45; }
+.flashcard-visual span { font-size: clamp(80px, 11vw, 132px); line-height: 1; }
+.flashcard-visual b { font-family: Arial, Helvetica, sans-serif; font-size: clamp(28px, 4vw, 44px); }
 .thinking-visual { font-size: clamp(84px, 12vw, 150px); }
 .launcher-card {
   display: grid;

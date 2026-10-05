@@ -12,7 +12,7 @@ const CATEGORY_LABELS = {
   hanzi: "國字",
   word: "英文單字"
 };
-const CATEGORY_ORDER = ["bopomofo", "letter", "hanzi", "word"];
+const CATEGORY_ORDER = ["bopomofo", "letter", "hanzi"];
 const HANZI_PINYIN = {
   "我": "wǒ", "你": "nǐ", "他": "tā", "她": "tā", "是": "shì", "不": "bù", "有": "yǒu", "在": "zài",
   "人": "rén", "大": "dà", "小": "xiǎo", "上": "shàng", "下": "xià", "中": "zhōng", "天": "tiān", "地": "dì",
@@ -258,7 +258,7 @@ function updateCategorySelection() {
 
 function renderCustomList() {
   els.customList.innerHTML = "";
-  state.lessons.filter(isEditableLesson).forEach((lesson) => {
+  state.lessons.filter((item) => item.category === "hanzi").forEach((lesson) => {
     const row = document.createElement("div");
     row.className = "manage-row";
     const info = document.createElement("div");
