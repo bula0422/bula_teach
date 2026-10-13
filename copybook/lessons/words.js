@@ -202,6 +202,20 @@
   { id: "word_language", category: "word", display: "language", hint: "[ˋlæŋgwɪdʒ]", meaning: "語言", speakText: "language", lang: "en-US" },
   { id: "word_lesson", category: "word", display: "lesson", hint: "[ˋlɛsən]", meaning: "課程", speakText: "lesson", lang: "en-US" }
   ];
+
+  const expandedWords = "eleven|十一\ntwelve|十二\nthirteen|十三\nfourteen|十四\nfifteen|十五\nsixteen|十六\nseventeen|十七\neighteen|十八\nnineteen|十九\ntwenty|二十\nMonday|星期一\nTuesday|星期二\nWednesday|星期三\nThursday|星期四\nFriday|星期五\nSaturday|星期六\nSunday|星期日\nJanuary|一月\nFebruary|二月\nMarch|三月\nApril|四月\nMay|五月\nJune|六月\nJuly|七月\nAugust|八月\nSeptember|九月\nOctober|十月\nNovember|十一月\nDecember|十二月\nspring|春天\nsummer|夏天\nautumn|秋天\nwinter|冬天\nparent|父親或母親\ngrandmother|祖母 / 外祖母\ngrandfather|祖父 / 外祖父\nuncle|叔叔 / 舅舅\naunt|阿姨 / 姑姑\ncousin|堂表兄弟姐妹\nson|兒子\ndaughter|女兒\nhair|頭髮\nface|臉\nneck|脖子\nshoulder|肩膀\nfinger|手指\nthumb|拇指\ntoe|腳趾\nknee|膝蓋\nback|背部\ntooth|牙齒\nteeth|牙齒（複數）\ntongue|舌頭\nstomach|肚子 / 胃\nheart|心臟\ndress|洋裝\nskirt|裙子\njacket|夾克\nsweater|毛衣\nshorts|短褲\njeans|牛仔褲\nglove|手套\nscarf|圍巾\nboot|靴子\ncap|帽子\nbelt|皮帶\npocket|口袋\nuniform|制服\nraincoat|雨衣\nslipper|拖鞋\ncheese|起司\nbutter|奶油\nsandwich|三明治\nhamburger|漢堡\nsausage|香腸\nsalad|沙拉\ntomato|番茄\npotato|馬鈴薯\ncarrot|胡蘿蔔\ncorn|玉米\nonion|洋蔥\nbean|豆子\npea|豌豆\ngrape|葡萄\nlemon|檸檬\npeach|桃子\npear|梨子\nstrawberry|草莓\nwatermelon|西瓜\npineapple|鳳梨\nchocolate|巧克力\nice cream|冰淇淋\ncereal|麥片\nflour|麵粉\nsugar|糖\nsalt|鹽\nhoney|蜂蜜\njam|果醬\ntea|茶\ncoffee|咖啡\nmouse|老鼠\nrabbit|兔子\ncow|牛\npig|豬\nhorse|馬\nsheep|綿羊\ngoat|山羊\nlion|獅子\ntiger|老虎\nbear|熊\nelephant|大象\nmonkey|猴子\ngiraffe|長頸鹿\nzebra|斑馬\npanda|熊貓\nfox|狐狸\nwolf|狼\ndeer|鹿\nkangaroo|袋鼠\nkoala|無尾熊\nsnake|蛇\nfrog|青蛙\nturtle|烏龜\ncrocodile|鱷魚\nlizard|蜥蜴\nwhale|鯨魚\ndolphin|海豚\nshark|鯊魚\noctopus|章魚\ncrab|螃蟹\npenguin|企鵝\nowl|貓頭鷹\neagle|老鷹\nparrot|鸚鵡\nbutterfly|蝴蝶\nbee|蜜蜂\nant|螞蟻\nspider|蜘蛛\nsnail|蝸牛\nworm|蟲\ndesk|書桌\nboard|板子 / 黑板\npaper|紙\nmarker|彩色筆\ncrayon|蠟筆\nscissors|剪刀\nglue|膠水\nmap|地圖\ncalendar|月曆\nbackpack|背包\nclassroom|教室\nplayground|操場\nbrush|刷子\ncomb|梳子\nmirror|鏡子\ntowel|毛巾\nsoap|肥皂\ntoothbrush|牙刷\ntoothpaste|牙膏\nblanket|毯子\npillow|枕頭\nlamp|燈\ntelevision|電視\nradio|收音機\ncamera|相機\nkey|鑰匙\nlock|鎖\nbottle|瓶子\nbowl|碗\nbasket|籃子\numbrella|雨傘\nwatch|手錶\nwallet|皮夾\ncoin|硬幣\nstamp|郵票\nairport|機場\nstation|車站\nmarket|市場\nrestaurant|餐廳\nbank|銀行\npost office|郵局\nmuseum|博物館\nbeach|海灘\nfarm|農場\noffice|辦公室\nfire station|消防局\nsupermarket|超級市場\nbakery|麵包店\npolice officer|警察\nfirefighter|消防員\ndriver|駕駛\ncook|廚師\npilot|飛行員\ndentist|牙醫\nartist|藝術家\nsinger|歌手\ndancer|舞者\nactor|演員\nmail carrier|郵差\nairplane|飛機\nship|船\nboat|小船\ntaxi|計程車\ntruck|卡車\nmotorcycle|摩托車\nsky|天空\nground|地面\ngrass|草\nleaf|葉子\nseed|種子\nrock|石頭\nsand|沙\nisland|島嶼\nfield|田野\nplant|植物\nrainbow|彩虹\nstorm|暴風雨\nthunder|雷聲\nlightning|閃電\nair|空氣\nfire|火\nearth|地球 / 土地\nspace|太空\nplanet|行星\nseason|季節\nsit|坐\nstand|站立\nopen|打開\nclose|關閉\nwash|清洗\nclean|清理\nbake|烘焙\ncut|切\ndraw|畫圖\npaint|畫畫 / 上色\ncount|數數\nask|詢問\ntell|告訴\nsay|說\nspeak|說話\nlearn|學習\nstudy|讀書\nteach|教導\nhelp|幫助\ngive|給\ntake|拿取\nmake|製作\nput|放置\nbring|帶來\nbuy|購買\nsell|販售\nsend|寄送\nshow|展示\nfind|找到\nlose|遺失\nwait|等待\nstart|開始\nfinish|完成\nstop|停止\nturn|轉彎 / 轉動\npush|推\npull|拉\nthrow|丟\ncatch|接住\nswim|游泳\ngood|好的\nbad|不好的\nnew|新的\nold|老的 / 舊的\nyoung|年輕的\nbeautiful|美麗的\npretty|漂亮的\nugly|醜的\nkind|親切的\nnice|友善的 / 美好的\nfunny|有趣的\nangry|生氣的\nafraid|害怕的\ntired|疲累的\nhungry|飢餓的\nthirsty|口渴的\nsick|生病的\nstrong|強壯的\nweak|虛弱的\nheavy|重的\nlight|輕的 / 光亮的\nhard|硬的 / 困難的\nsoft|柔軟的\nquiet|安靜的\ndirty|骯髒的\nfull|滿的\nempty|空的\nwet|濕的\ndry|乾的\nearly|早的\nlate|晚的 / 遲到的\nright|正確的 / 右邊\nwrong|錯誤的\neasy|容易的".split("\n").map((row) => {
+    const [display, meaning] = row.split("|");
+    return {
+      id: `word_${display.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "")}`,
+      category: "word",
+      display,
+      hint: "",
+      meaning,
+      speakText: display,
+      lang: "en-US"
+    };
+  });
+  lessons.push(...expandedWords);
   window.BulaTeachLessonData = {
     ...(window.BulaTeachLessonData || {}),
     words: lessons

@@ -30,6 +30,8 @@ const HANZI_PINYIN = {
 const LESSONS_KEY = "bula-teach-lessons-v2";
 const SETTINGS_KEY = "bula-teach-settings-v1";
 const BACKUP_KEY = "bula-teach-backup-state-v1";
+const WORD_EXPANSION_KEY = "bula-teach-word-expansion-v1";
+const EXPANDED_WORD_IDS = new Set((LESSON_DATA.words || []).slice(201).map((item) => item.id));
 const EXPORT_VERSION = 1;
 const GRID_SIZES = [2, 4, 16];
 const DEFAULT_SETTINGS = { autoPlay: false, showTemplate: true, gridSize: 2 };
@@ -114,7 +116,14 @@ function loadLessons() {
   try {
     const saved = JSON.parse(localStorage.getItem(LESSONS_KEY) || "null");
     if (Array.isArray(saved)) {
-      const editable = saved.map(normalizeLegacyLesson).filter(isEditableLesson);
+      let editable = saved.map(normalizeLegacyLesson).filter(isEditableLesson);
+      if (localStorage.getItem(WORD_EXPANSION_KEY) !== "complete") {
+        const existingIds = new Set(editable.map((item) => item.id));
+        const additions = editableDefaults.filter((item) => EXPANDED_WORD_IDS.has(item.id) && !existingIds.has(item.id));
+        editable = [...editable, ...additions.map((item) => normalizeLegacyLesson({ ...item }))];
+        localStorage.setItem(LESSONS_KEY, JSON.stringify(editable));
+        localStorage.setItem(WORD_EXPANSION_KEY, "complete");
+      }
       return [...fixedLessons, ...editable];
     }
   } catch {}
